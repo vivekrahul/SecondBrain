@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 const navItems = [
   { href: '/', icon: 'home', label: 'Home' },
   { href: '/ideas', icon: 'lightbulb', label: 'Ideas' },
-  { href: '/shopping', icon: 'shopping_cart', label: 'Shopping' },
+  { href: '/shopping', icon: 'shopping_bag', label: 'Shopping' },
   { href: '/workout', icon: 'fitness_center', label: 'Gym' },
-  { href: '/logs', icon: 'work', label: 'Career' },
+  { href: '/tasks', icon: 'task_alt', label: 'Tasks' },
 ];
 
 export default function BottomNav() {

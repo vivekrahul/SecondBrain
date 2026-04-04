@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brain Sync - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#5f4ea5",
+                    "surface-container-low": "#f1f1f0",
+                    "inverse-primary": "#b3a1ff",
+                    "on-tertiary": "#eef3ff",
+                    "primary-fixed": "#b3a1ff",
+                    "surface-dim": "#d4d4d4",
+                    "surface": "#f7f6f5",
+                    "on-primary-container": "#311c75",
+                    "tertiary": "#395d8a",
+                    "on-tertiary-container": "#1d436e",
+                    "tertiary-container": "#a8cbfe",
+                    "primary-container": "#b3a1ff",
+                    "primary": "#5f4ea5",
+                    "outline": "#767776",
+                    "tertiary-dim": "#2d517d",
+                    "on-error-container": "#510017",
+                    "secondary-dim": "#6d4800",
+                    "outline-variant": "#adadac",
+                    "on-error": "#ffefef",
+                    "on-primary-fixed": "#16004e",
+                    "on-background": "#2e2f2f",
+                    "on-secondary-fixed": "#492f00",
+                    "inverse-surface": "#0d0e0e",
+                    "primary-fixed-dim": "#a593f0",
+                    "on-tertiary-fixed": "#002f58",
+                    "inverse-on-surface": "#9d9d9c",
+                    "on-secondary": "#fff0e1",
+                    "on-tertiary-fixed-variant": "#274c78",
+                    "on-primary-fixed-variant": "#3a277e",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#5b5c5b",
+                    "tertiary-fixed": "#a8cbfe",
+                    "on-secondary-container": "#624000",
+                    "on-secondary-fixed-variant": "#6f4900",
+                    "surface-bright": "#f7f6f5",
+                    "secondary-container": "#ffc878",
+                    "background": "#f7f6f5",
+                    "error-dim": "#a70138",
+                    "surface-container": "#e8e8e7",
+                    "secondary-fixed": "#ffc878",
+                    "secondary": "#7d5300",
+                    "on-surface": "#2e2f2f",
+                    "error": "#b41340",
+                    "on-primary": "#f6f0ff",
+                    "tertiary-fixed-dim": "#9bbef0",
+                    "surface-variant": "#dcdddc",
+                    "primary-dim": "#534198",
+                    "secondary-fixed-dim": "#f8b854",
+                    "surface-container-high": "#e2e2e1",
+                    "error-container": "#f74b6d",
+                    "surface-container-highest": "#dcdddc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-4">
+<header class="flex justify-between items-center px-6 py-4 w-full fixed top-0 bg-[#f7f6f5] dark:bg-stone-950">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xl font-extrabold text-[#5f4ea5] dark:text-[#b3a1ff]" data-icon="brain">neurology</span>
+<span class="font-manrope tracking-tight font-bold text-xl font-extrabold text-[#5f4ea5] dark:text-[#b3a1ff]">Brain Sync</span>
+</div>
+<button class="material-symbols-outlined text-[#5f4ea5] dark:text-[#b3a1ff] hover:opacity-80 transition-opacity scale-95 active:duration-150" data-icon="close">close</button>
+</header>
+<main class="max-w-md w-full mt-20 mb-24">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_-8px_40px_rgba(46,47,47,0.05)] text-center mb-8">
+<div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#b3a1ff]/10">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="psychology" style="font-variation-settings: 'FILL' 1;">psychology</span>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight text-on-surface mb-2">Welcome, user@example.com!</h1>
+<p class="text-on-surface-variant text-lg">Just text it. We'll sort it.</p>
+</div>
+<div class="space-y-6">
+<!-- Transformation Card 1: Grocery -->
+<div class="bg-surface-container-low rounded-lg p-6 relative overflow-hidden">
+<div class="flex flex-col gap-4">
+<div class="text-on-surface-variant italic text-sm">"Need eggs and whey protein next week"</div>
+<div class="flex items-center gap-4 bg-[#b6eef5]/30 p-4 rounded-full border border-[#b6eef5]/50">
+<span class="material-symbols-outlined text-[#395d8a]" data-icon="shopping_cart">shopping_cart</span>
+<div class="flex gap-3 text-sm font-semibold text-[#1d436e]">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="check_box" style="font-variation-settings: 'FILL' 1;">check_box</span> Eggs</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs" data-icon="check_box" style="font-variation-settings: 'FILL' 1;">check_box</span> Whey protein</span>
+</div>
+</div>
+</div>
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-6xl" data-icon="nutrition">nutrition</span>
+</div>
+</div>
+<!-- Transformation Card 2: Gym -->
+<div class="bg-surface-container-low rounded-lg p-6 relative overflow-hidden">
+<div class="flex flex-col gap-4">
+<div class="text-on-surface-variant italic text-sm">"Chest day: Benchpress 85kg 5x5"</div>
+<div class="flex items-center gap-4 bg-[#b3a1ff]/20 p-4 rounded-full border border-[#b3a1ff]/30">
+<span class="material-symbols-outlined text-primary" data-icon="fitness_center">fitness_center</span>
+<div>
+<div class="text-sm font-bold text-on-primary-container">Benchpress</div>
+<div class="text-xs text-primary">85kg, 5 sets, 5 reps</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Transformation Card 3: Idea -->
+<div class="bg-surface-container-low rounded-lg p-6 relative overflow-hidden">
+<div class="flex flex-col gap-4">
+<div class="text-on-surface-variant italic text-sm">"Idea: Store Kholo neighborhood launch strategy"</div>
+<div class="flex items-center justify-between bg-[#ffbe59]/20 p-4 rounded-full border border-[#ffbe59]/30">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="lightbulb" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<div class="text-sm font-bold text-on-secondary-container">Launch strategy</div>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold tracking-wider">#URGENT</span>
+</div>
+</div>
+</div>
+<!-- Transformation Card 4: Reminder -->
+<div class="bg-surface-container-low rounded-lg p-6 relative overflow-hidden">
+<div class="flex flex-col gap-4">
+<div class="text-on-surface-variant italic text-sm">"Remind me to renew domain in 30 days"</div>
+<div class="flex items-center gap-4 bg-[#ff9fff]/20 p-4 rounded-full border border-[#ff9fff]/30">
+<span class="material-symbols-outlined text-[#a70138]" data-icon="calendar_today">calendar_today</span>
+<div>
+<div class="text-sm font-bold text-on-surface">Renew domain</div>
+<div class="text-xs text-error-dim">Due: May 15, 2026</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-center items-center px-6 pb-10 pt-6 bg-surface/80 backdrop-blur-md">
+<button class="w-full max-w-md bg-gradient-to-r from-primary to-primary-container text-white font-bold py-5 rounded-full shadow-xl hover:opacity-90 transition-all active:scale-95 text-lg">
+            Got it, let's go!
+        </button>
+</footer>
+<!-- Decorative background elements for Luminous Calm aesthetic -->
+<div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#b3a1ff]/10 rounded-full blur-[120px] -z-10"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#ffbe59]/10 rounded-full blur-[120px] -z-10"></div>
+</body></html>

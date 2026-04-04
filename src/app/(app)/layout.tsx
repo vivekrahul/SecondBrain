@@ -4,6 +4,8 @@ import CaptureBar from '@/components/CaptureBar';
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 
+import { redirect } from 'next/navigation';
+
 export default async function AppLayout({
   children,
 }: {
@@ -15,9 +17,14 @@ export default async function AppLayout({
   if (auth) {
     const { data: profile } = await supabaseAdmin
       .from('profiles')
-      .select('name, email')
+      .select('name, email, has_seen_onboarding')
       .eq('id', auth.userId)
       .single();
+      
+    if (profile && !profile.has_seen_onboarding) {
+      redirect('/onboarding');
+    }
+
     displayName = profile?.name || profile?.email?.split('@')[0] || '';
   }
 

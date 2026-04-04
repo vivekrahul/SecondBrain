@@ -8,7 +8,7 @@ const navItems = [
   { href: '/ideas', icon: 'lightbulb', label: 'Ideas' },
   { href: '/shopping', icon: 'shopping_bag', label: 'Shopping' },
   { href: '/workout', icon: 'fitness_center', label: 'Gym' },
-  { href: '/logs', icon: 'work', label: 'Career' },
+  { href: '/tasks', icon: 'task_alt', label: 'Tasks' },
 ];
 
 export default function Sidebar({ displayName }: { displayName?: string }) {
@@ -61,17 +61,30 @@ export default function Sidebar({ displayName }: { displayName?: string }) {
 
       {/* Settings & Profile */}
       <div className="space-y-2">
-        <Link
-          href="/settings"
-          className={`flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
-            pathname === '/settings'
-              ? 'bg-surface-container-lowest text-primary font-bold'
-              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-          }`}
-        >
-          <span className="material-symbols-outlined">settings</span>
-          <span className="text-sm font-medium">Settings</span>
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/settings"
+            className={`flex-1 flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
+              pathname === '/settings'
+                ? 'bg-surface-container-lowest text-primary font-bold'
+                : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+            }`}
+          >
+            <span className="material-symbols-outlined">settings</span>
+            <span className="text-sm font-medium">Settings</span>
+          </Link>
+          <Link
+            href="/insights"
+            className={`flex items-center justify-center w-12 rounded-full transition-all duration-300 ${
+              pathname === '/insights'
+                ? 'bg-surface-container-lowest text-primary font-bold'
+                : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+            }`}
+            title="Insights"
+          >
+            <span className="material-symbols-outlined">analytics</span>
+          </Link>
+        </div>
         <button
           onClick={handleLogout}
           className="flex items-center gap-4 px-4 py-3 rounded-full text-on-surface-variant hover:bg-error-container/10 hover:text-error transition-all duration-300 w-full"

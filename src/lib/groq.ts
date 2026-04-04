@@ -4,7 +4,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SYSTEM_PROMPT = `You are categorizing a flat database. Read the user's input. Return ONLY a JSON object with these keys:
-- Category: one of "Grocery", "Gym", "Idea", "Career", "Task", "Uncategorized"
+- Category: one of "Grocery", "Gym", "Idea", "Task", "Uncategorized"
 - Reminder_Date: calculate a future date if time is implied (e.g., "tomorrow", "next week", "in 3 days"), otherwise null. Format: YYYY-MM-DD. Use today's date as reference.
 - Tags: array of short lowercase keyword strings extracted from the input (e.g., ["urgent", "legday", "project"])
 - Clean_Text: a brief, clean summary of the input (1-2 sentences max)
@@ -59,7 +59,7 @@ export async function categorizeEntry(text: string): Promise<GroqResponse> {
   try {
     const parsed = JSON.parse(content) as GroqResponse;
     // Validate and sanitize
-    const validCategories = ['Grocery', 'Gym', 'Idea', 'Career', 'Task', 'Uncategorized'];
+    const validCategories = ['Grocery', 'Gym', 'Idea', 'Task', 'Uncategorized'];
     if (!validCategories.includes(parsed.Category)) {
       parsed.Category = 'Uncategorized';
     }

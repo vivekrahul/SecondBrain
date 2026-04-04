@@ -19,7 +19,8 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
-      .eq('category', 'Idea')
+      .eq('category', 'Task')
+      .eq('status', 'Open')
       .order('created_at', { ascending: false })
       .limit(3),
     supabaseAdmin
@@ -31,7 +32,7 @@ async function getDashboardData(userId: string) {
 
   return {
     reminders: (remindersResult.data || []) as BrainDump[],
-    recentIdeas: (recentResult.data || []) as BrainDump[],
+    recentTasks: (recentResult.data || []) as BrainDump[],
     openCount: statsResult.data?.length || 0,
   };
 }
@@ -55,7 +56,7 @@ export default async function DashboardPage() {
   const auth = await verifyAuth();
   if (!auth) return null;
 
-  const { reminders, recentIdeas, openCount } = await getDashboardData(auth.userId);
+  const { reminders, recentTasks, openCount } = await getDashboardData(auth.userId);
 
   return (
     <>
@@ -68,9 +69,14 @@ export default async function DashboardPage() {
             </div>
             <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
           </div>
-          <Link href="/settings" className="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
-            <span className="material-symbols-outlined">settings</span>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/settings" className="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
+              <span className="material-symbols-outlined">settings</span>
+            </Link>
+            <Link href="/insights" className="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
+              <span className="material-symbols-outlined">analytics</span>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -87,12 +93,12 @@ export default async function DashboardPage() {
                 Curate your thoughts,<br />clear your mind.
               </h2>
               <div className="mt-6 flex flex-wrap gap-3">
-                <span className="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full text-sm font-bold">
+                <Link href="/logs" className="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full text-sm font-bold hover:scale-105 transition-transform">
                   {openCount} Open Items
-                </span>
-                <span className="px-4 py-2 bg-tertiary-container text-on-tertiary-container rounded-full text-sm font-bold">
-                  {recentIdeas.length} Recent Ideas
-                </span>
+                </Link>
+                <Link href="/tasks" className="px-4 py-2 bg-tertiary-container text-on-tertiary-container rounded-full text-sm font-bold hover:scale-105 transition-transform">
+                  {recentTasks.length} Active Tasks
+                </Link>
               </div>
             </div>
             <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-gradient-to-br from-primary-container to-tertiary-fixed rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
@@ -149,28 +155,33 @@ export default async function DashboardPage() {
           )}
         </section>
 
-        {/* Recent Ideas */}
+        {/* Recent Tasks */}
         <section className="pb-12">
-          <h2 className="text-2xl font-extrabold mb-6">Recent Ideas</h2>
-          {recentIdeas.length === 0 ? (
+          <div className="flex justify-between items-end mb-6">
+            <h2 className="text-2xl font-extrabold">Active Tasks</h2>
+            <Link href="/tasks" className="text-primary font-bold text-sm hover:underline">View All</Link>
+          </div>
+          {recentTasks.length === 0 ? (
             <div className="bg-surface-container-low p-8 rounded-xl text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-2">lightbulb</span>
-              <p className="text-on-surface-variant">No ideas captured yet. Start typing below!</p>
+              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-2">task_alt</span>
+              <p className="text-on-surface-variant">No active tasks. You're all caught up!</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {recentIdeas.map((idea) => (
-                <div key={idea.id} className="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
-                  <div className="w-16 h-16 rounded-lg bg-primary-container/20 flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-primary text-2xl">lightbulb</span>
+              {recentTasks.map((task) => (
+                <div key={task.id} className="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
+                  <div className="w-16 h-16 rounded-lg bg-tertiary-container/30 flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-tertiary text-2xl">task_alt</span>
                   </div>
                   <div className="flex-grow min-w-0">
-                    <h5 className="font-bold text-on-surface truncate">{idea.clean_text || idea.raw_text}</h5>
-                    <p className="text-sm text-on-surface-variant line-clamp-1">{idea.raw_text}</p>
+                    <h5 className="font-bold text-on-surface truncate">{task.clean_text || task.raw_text}</h5>
+                    {task.context_tags && task.context_tags.length > 0 && (
+                      <p className="text-sm text-on-surface-variant line-clamp-1">{task.context_tags.map(t => `#${t}`).join(' ')}</p>
+                    )}
                   </div>
                   <div className="text-right hidden sm:block flex-shrink-0">
                     <p className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">
-                      {new Date(idea.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      {new Date(task.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </p>
                   </div>
                 </div>

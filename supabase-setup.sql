@@ -76,3 +76,6 @@ CREATE POLICY "Users can delete own entries"
 
 -- Migration: Add name column to profiles (run if table already exists)
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name TEXT;
+
+-- Migration: Add has_seen_onboarding column to profiles
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS has_seen_onboarding BOOLEAN DEFAULT FALSE;
