@@ -1,6 +1,6 @@
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
-import IOSInstallBanner from '@/components/IOSInstallBanner';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import Link from 'next/link';
 import type { BrainDump } from '@/lib/types';
 
@@ -75,8 +75,8 @@ export default async function DashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 space-y-10">
-        {/* iOS Install Banner */}
-        <IOSInstallBanner />
+        {/* PWA Install Prompt (iOS + Android) */}
+        <PWAInstallPrompt />
 
         {/* Hero — Today's Focus */}
         <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
