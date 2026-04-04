@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luminous - Second Brain Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#002f58",
+                    "tertiary-fixed": "#a8cbfe",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#f6f0ff",
+                    "primary": "#5f4ea5",
+                    "surface-container": "#e8e8e7",
+                    "inverse-surface": "#0d0e0e",
+                    "secondary-fixed-dim": "#f8b854",
+                    "outline": "#767776",
+                    "secondary-container": "#ffc878",
+                    "secondary-dim": "#6d4800",
+                    "on-surface-variant": "#5b5c5b",
+                    "on-error-container": "#510017",
+                    "tertiary-fixed-dim": "#9bbef0",
+                    "on-primary-fixed": "#16004e",
+                    "on-tertiary-container": "#1d436e",
+                    "error": "#b41340",
+                    "on-secondary-fixed-variant": "#6f4900",
+                    "secondary-fixed": "#ffc878",
+                    "primary-fixed": "#b3a1ff",
+                    "surface-tint": "#5f4ea5",
+                    "surface-variant": "#dcdddc",
+                    "tertiary-dim": "#2d517d",
+                    "surface-dim": "#d4d4d4",
+                    "secondary": "#7d5300",
+                    "background": "#f7f6f5",
+                    "on-tertiary-fixed-variant": "#274c78",
+                    "on-secondary-fixed": "#492f00",
+                    "error-dim": "#a70138",
+                    "on-surface": "#2e2f2f",
+                    "inverse-on-surface": "#9d9d9c",
+                    "primary-dim": "#534198",
+                    "on-secondary": "#fff0e1",
+                    "on-error": "#ffefef",
+                    "on-secondary-container": "#624000",
+                    "tertiary-container": "#a8cbfe",
+                    "tertiary": "#395d8a",
+                    "on-primary-container": "#311c75",
+                    "inverse-primary": "#b3a1ff",
+                    "error-container": "#f74b6d",
+                    "on-tertiary": "#eef3ff",
+                    "on-background": "#2e2f2f",
+                    "surface": "#f7f6f5",
+                    "primary-container": "#b3a1ff",
+                    "surface-container-highest": "#dcdddc",
+                    "surface-bright": "#f7f6f5",
+                    "on-primary-fixed-variant": "#3a277e",
+                    "outline-variant": "#adadac",
+                    "primary-fixed-dim": "#a593f0",
+                    "surface-container-low": "#f1f1f0",
+                    "surface-container-high": "#e2e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #5f4ea5 0%, #b3a1ff 100%);
+        }
+        .soft-shadow {
+            box-shadow: 0 32px 64px -12px rgba(46, 47, 47, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex items-center justify-center p-6 selection:bg-primary-container selection:text-on-primary-container">
+<!-- Decorative Organic Shapes -->
+<div class="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-primary-container/20 blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-tertiary-container/30 blur-[100px] pointer-events-none"></div>
+<main class="w-full max-w-md relative z-10">
+<!-- Logo & Branding -->
+<header class="flex flex-col items-center mb-12">
+<div class="w-20 h-20 mb-6 flex items-center justify-center bg-surface-container-lowest rounded-xl soft-shadow">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Second Brain</h1>
+<p class="text-on-surface-variant font-medium text-center max-w-[280px]">Access your curated digital sanctuary and serene thoughts.</p>
+</header>
+<!-- Login Container -->
+<div class="glass-card rounded-xl p-8 soft-shadow border border-white/40">
+<form class="space-y-8" onsubmit="return false;">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="block text-xs font-bold text-on-surface-variant tracking-widest uppercase px-1" for="email">Email</label>
+<div class="relative group">
+<input class="w-full h-14 px-6 bg-surface-container-low text-on-surface rounded-lg border-0 ring-0 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-300 placeholder:text-outline-variant" id="email" placeholder="your@email.com" type="email"/>
+<div class="absolute inset-y-0 right-4 flex items-center text-outline-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="alternate_email">alternate_email</span>
+</div>
+</div>
+</div>
+<!-- PIN Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block text-xs font-bold text-on-surface-variant tracking-widest uppercase" for="pin">6-Digit PIN</label>
+<button class="text-xs font-semibold text-primary hover:opacity-70 transition-opacity" type="button">Forgot PIN?</button>
+</div>
+<div class="relative group">
+<input class="w-full h-14 px-6 bg-surface-container-low text-on-surface rounded-lg border-0 ring-0 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-300 placeholder:text-outline-variant tracking-[0.5em]" id="pin" maxlength="6" placeholder="••••••" type="password"/>
+<div class="absolute inset-y-0 right-4 flex items-center text-outline-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+</div>
+</div>
+<!-- Sign In Button -->
+<button class="w-full h-16 bg-gradient-primary text-on-primary font-bold text-lg rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3" type="submit">
+                    Sign In
+                    <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 pt-8 border-t border-outline-variant/10 text-center">
+<p class="text-on-surface-variant text-sm">
+                    New here? 
+                    <a class="text-primary font-bold hover:underline underline-offset-4" href="#">Create your Brain</a>
+</p>
+</div>
+</div>
+<!-- Footer / Security Info -->
+<footer class="mt-12 text-center">
+<div class="flex items-center justify-center gap-6 opacity-40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="encrypted">encrypted</span>
+<span class="text-[10px] font-bold tracking-widest uppercase">End-to-End Encrypted</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-on-surface-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="cloud_off">cloud_off</span>
+<span class="text-[10px] font-bold tracking-widest uppercase">Privacy First</span>
+</div>
+</div>
+</footer>
+</main>
+<!-- Contextual Aesthetic Background Image (Subtle) -->
+<div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden">
+<img alt="" class="w-full h-full object-cover opacity-[0.03] scale-110" data-alt="abstract flowing 3D organic shapes in soft lavender and cream colors with silk texture and ambient lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAshwT3AxbQU8zRHL66BtFTzTo4PDkwh__vrnOLbJsOfYI3P_haB9qW3bARFFsh7qDC48barE57Rv8_lkcfEj0ZeqDhL0gEQiuylOtX1MkpKw6sxPIHfvlDTc8zvo8y75a9J8gtHse_qQ1959l7I3_i1UKCejBrRm_tUoDyf_4A-yjSv00Oz630w_TBslLj3vo0tw588gr4RrpgW1-fnURqomXPCIskjf_-ryAKyn5VvpqkJ62EkYLG4S3tb695fXln8Kl4OetX-A"/>
+</div>
+</body></html>

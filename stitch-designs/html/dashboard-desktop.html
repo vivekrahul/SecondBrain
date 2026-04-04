@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luminous | Second Brain Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#002f58",
+                        "tertiary-fixed": "#a8cbfe",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#f6f0ff",
+                        "primary": "#5f4ea5",
+                        "surface-container": "#e8e8e7",
+                        "inverse-surface": "#0d0e0e",
+                        "secondary-fixed-dim": "#f8b854",
+                        "outline": "#767776",
+                        "secondary-container": "#ffc878",
+                        "secondary-dim": "#6d4800",
+                        "on-surface-variant": "#5b5c5b",
+                        "on-error-container": "#510017",
+                        "tertiary-fixed-dim": "#9bbef0",
+                        "on-primary-fixed": "#16004e",
+                        "on-tertiary-container": "#1d436e",
+                        "error": "#b41340",
+                        "on-secondary-fixed-variant": "#6f4900",
+                        "secondary-fixed": "#ffc878",
+                        "primary-fixed": "#b3a1ff",
+                        "surface-tint": "#5f4ea5",
+                        "surface-variant": "#dcdddc",
+                        "tertiary-dim": "#2d517d",
+                        "surface-dim": "#d4d4d4",
+                        "secondary": "#7d5300",
+                        "background": "#f7f6f5",
+                        "on-tertiary-fixed-variant": "#274c78",
+                        "on-secondary-fixed": "#492f00",
+                        "error-dim": "#a70138",
+                        "on-surface": "#2e2f2f",
+                        "inverse-on-surface": "#9d9d9c",
+                        "primary-dim": "#534198",
+                        "on-secondary": "#fff0e1",
+                        "on-error": "#ffefef",
+                        "on-secondary-container": "#624000",
+                        "tertiary-container": "#a8cbfe",
+                        "tertiary": "#395d8a",
+                        "on-primary-container": "#311c75",
+                        "inverse-primary": "#b3a1ff",
+                        "error-container": "#f74b6d",
+                        "on-tertiary": "#eef3ff",
+                        "on-background": "#2e2f2f",
+                        "surface": "#f7f6f5",
+                        "primary-container": "#b3a1ff",
+                        "surface-container-highest": "#dcdddc",
+                        "surface-bright": "#f7f6f5",
+                        "on-primary-fixed-variant": "#3a277e",
+                        "outline-variant": "#adadac",
+                        "primary-fixed-dim": "#a593f0",
+                        "surface-container-low": "#f1f1f0",
+                        "surface-container-high": "#e2e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .sidebar-active {
+            color: #5f4ea5;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Desktop Sidebar (Navigation Shell) -->
+<aside class="hidden md:flex flex-col w-72 h-screen bg-surface-container-low p-6 space-y-8 flex-shrink-0">
+<div class="flex items-center px-4">
+<span class="text-2xl font-black bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] bg-clip-text text-transparent tracking-tighter">Luminous</span>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Home: Active -->
+<a class="flex items-center gap-4 px-4 py-3 rounded-full bg-surface-container-lowest text-primary font-bold transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-sm">Home</span>
+</a>
+<!-- Ideas -->
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">lightbulb</span>
+<span class="text-sm font-medium">Ideas</span>
+</a>
+<!-- Shopping -->
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="text-sm font-medium">Shopping</span>
+</a>
+<!-- Gym -->
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-sm font-medium">Gym</span>
+</a>
+<!-- Career -->
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="text-sm font-medium">Career</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-surface-container rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden">
+<img alt="Profile" data-alt="close-up portrait of a creative professional woman with soft studio lighting and warm neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdYX1yHTLYwKYO6y4HjK_4q9w1kWK8YNTgJR0-uMldO8yLFl47SO3b8szLofiNjkAfzTwOtks1_Kc-4AjfBQuRBsKZ8AqFKPBjV6O2XU4vObt1CZK8MioTuN388R205ViXNUem33ZDU9yWSNrvZbLcIqr5sddgMUJNEwTMjZ3dI4agGsogN7XvWmzxElZqxBNZ2Jm-FZ93G7QBXhyLtKVGueJi4RtwcFxNBrDkZmBLvTk-0Du7jPni6vjAyxnAvbuJLUpVKtbAkw"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold">Alex Chen</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Premium Mind</span>
+</div>
+<span class="material-symbols-outlined ml-auto text-on-surface-variant text-sm">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 relative overflow-y-auto flex flex-col h-screen">
+<!-- TopAppBar (Predicted from JSON) -->
+<header class="bg-[#f7f6f5]/70 dark:bg-[#2e2f2f]/70 backdrop-blur-xl sticky top-0 z-40 flex justify-between items-center w-full px-8 py-6">
+<h1 class="font-['Manrope'] font-bold tracking-tight text-3xl text-on-surface">Today's Focus</h1>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-container-high rounded-full px-4 py-2 items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48 font-medium placeholder:text-on-surface-variant" placeholder="Search your brain..." type="text"/>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<!-- Bento Grid Dashboard -->
+<div class="px-8 pb-32 pt-4">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Today's Reminders (Priority Column) -->
+<section class="md:col-span-4 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold tracking-tight">Today's Reminders</h2>
+<span class="text-xs font-bold text-primary uppercase tracking-tighter">View All</span>
+</div>
+<div class="space-y-4">
+<!-- Reminder Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_8px_32px_0_rgba(46,47,47,0.04)] group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex gap-4 items-start">
+<div class="w-2 h-12 bg-primary rounded-full"></div>
+<div class="flex-1">
+<h3 class="font-bold text-lg leading-tight">Product Strategy Review</h3>
+<p class="text-on-surface-variant text-sm mt-1">Focus on Q4 architectural pivots and API stability.</p>
+<div class="flex items-center gap-3 mt-4">
+<span class="px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-[10px] font-bold">14:00 PM</span>
+<span class="material-symbols-outlined text-primary text-sm">video_call</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Reminder Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_8px_32px_0_rgba(46,47,47,0.04)] group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex gap-4 items-start">
+<div class="w-2 h-12 bg-secondary-fixed rounded-full"></div>
+<div class="flex-1">
+<h3 class="font-bold text-lg leading-tight">Market Fresh Shopping</h3>
+<p class="text-on-surface-variant text-sm mt-1">Avocados, San Marzano tomatoes, sourdough starter.</p>
+<div class="flex items-center gap-3 mt-4">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold">17:30 PM</span>
+<span class="material-symbols-outlined text-secondary text-sm">shopping_cart</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Bento Stats -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-tertiary-container/30 p-6 rounded-lg border border-tertiary-container/20">
+<span class="text-tertiary font-black text-3xl">12</span>
+<p class="text-xs font-bold text-on-tertiary-container mt-1 uppercase">Active Ideas</p>
+</div>
+<div class="bg-secondary-container/30 p-6 rounded-lg border border-secondary-container/20">
+<span class="text-secondary font-black text-3xl">04</span>
+<p class="text-xs font-bold text-on-secondary-container mt-1 uppercase">Goals Met</p>
+</div>
+</div>
+</section>
+<!-- Recent Ideas (Dynamic Grid) -->
+<section class="md:col-span-8 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold tracking-tight">Recent Ideas</h2>
+<div class="flex gap-2">
+<button class="p-2 rounded-full bg-surface-container-low text-on-surface-variant material-symbols-outlined">grid_view</button>
+<button class="p-2 rounded-full text-on-surface material-symbols-outlined">format_list_bulleted</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<!-- Idea Card: Visual -->
+<div class="sm:col-span-2 relative group overflow-hidden rounded-xl h-64 bg-surface-container-highest shadow-xl">
+<img alt="Abstract Art" class="absolute inset-0 w-full h-screen object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="ethereal abstract 3D render with flowing silk textures in iridescent lavender and soft blue tones with depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm9CzInJP7cwXohTos5gO_4FrFkdJ_IWk7GS4LSjelDOkpOmX9qDeZZoV9cxDcYMIdIEVkZpOc0SOdqKF-dYgjrpGHYPW56EueCS-8mYyOzCFjs7TywZpEjB0hMn5HbL4tCmUsMeiFo0SI8AuK8hUKoHxYK4o4SC5no7ukidBiPexe8_98-O2yOnvyV9uQdcrt8l0P9ka7voIAbJ2gfohow24_sS3cSGqQP31pwlKVPenKWVDdAqAGgVzF3m21BmFFR2u5vBpklA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white rounded-full text-[10px] font-bold uppercase tracking-wider">Concept Design</span>
+<h3 class="text-white text-2xl font-bold mt-2">The Zen Interface: Cognitive Ease in UI</h3>
+<p class="text-white/70 text-sm mt-1">Researching how minimalism reduces executive function load...</p>
+</div>
+</div>
+<!-- Idea Card: Text -->
+<div class="bg-surface-container-low p-8 rounded-lg relative overflow-hidden flex flex-col justify-between h-64 border border-outline-variant/10">
+<div class="relative z-10">
+<span class="material-symbols-outlined text-primary mb-4 text-3xl">psychology</span>
+<h3 class="font-bold text-xl leading-tight">Neural Bloom Protocol</h3>
+<p class="text-on-surface-variant text-sm mt-2">Drafting a system for interconnected note-taking inspired by mycelium networks.</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-[10px] font-bold text-on-surface-variant/60 uppercase">Drafted 2h ago</span>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+</div>
+</div>
+<!-- Idea Card: Image Thumbnail -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm border border-surface-container h-64 flex flex-col">
+<div class="h-32 w-full rounded-lg overflow-hidden mb-4">
+<img alt="Abstract architecture" class="w-full h-full object-cover" data-alt="monochrome abstract architectural photography with stark shadows and sharp geometric angles of a modern building" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8KHXBcn82xjOokDQBWMU7GIUuNI_7bKA_VyqHIa5v7lQFtQUaMOHHmLPUizxrd0z4xzlf1ugLpPmp0bltDs6KPpGjbCUXIJ6RN9o4QtwoD8NrvcRdUPXt3B31vOabsK7ad03sunyCiNCtpmtvwCXqWnS6fsrHpHcbpMo3Jy4TInim1A4sF0tMFFIial-W5vNlfRMCcveJ2hfQiNlgbNdBI5nRQrVVwThvmFcva9Qc5nfMGRKiury2y7so3kCqyc8ip9JYjz-tdg"/>
+</div>
+<h3 class="font-bold text-lg tracking-tight truncate">Monolith Study</h3>
+<p class="text-on-surface-variant text-xs mt-1 line-clamp-2">Architecture references for the new studio project in Berlin.</p>
+<div class="flex gap-2 mt-auto">
+<span class="w-6 h-6 rounded-full bg-secondary-fixed"></span>
+<span class="w-6 h-6 rounded-full bg-tertiary-fixed"></span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Sticky Capture Bar -->
+<div class="fixed bottom-12 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+<div class="bg-[#ffffff]/80 backdrop-blur-3xl border border-surface-container rounded-full p-2 flex items-center gap-4 shadow-[0_16px_48px_-12px_rgba(95,78,165,0.2)]">
+<button class="w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] text-white shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+<input class="bg-transparent border-none focus:ring-0 w-full text-lg font-medium placeholder:text-on-surface-variant/40" placeholder="Capture a thought..." type="text"/>
+<div class="flex items-center gap-2 pr-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">mic</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">image</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">attachment</button>
+</div>
+</div>
+</div>
+<!-- Mobile Bottom Nav (Predicted from JSON) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-[#ffffff]/70 backdrop-blur-3xl rounded-t-[3rem] px-4 pb-8 pt-4 shadow-[0_-8px_32px_0_rgba(46,47,47,0.04)]">
+<a class="flex items-center justify-center bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] text-white rounded-full p-4 scale-110 shadow-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</a>
+<a class="flex items-center justify-center text-[#5b5c5b] p-4" href="#">
+<span class="material-symbols-outlined">lightbulb</span>
+</a>
+<a class="flex items-center justify-center text-[#5b5c5b] p-4" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+</a>
+<a class="flex items-center justify-center text-[#5b5c5b] p-4" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+</a>
+<a class="flex items-center justify-center text-[#5b5c5b] p-4" href="#">
+<span class="material-symbols-outlined">work</span>
+</a>
+</nav>
+</main>
+</body></html>

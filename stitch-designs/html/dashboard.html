@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Second Brain - Your Digital Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#a8cbfe",
+                      "on-secondary": "#fff0e1",
+                      "surface-container-highest": "#dcdddc",
+                      "surface-tint": "#5f4ea5",
+                      "primary-dim": "#534198",
+                      "on-secondary-fixed": "#492f00",
+                      "surface-variant": "#dcdddc",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#5f4ea5",
+                      "tertiary-dim": "#2d517d",
+                      "inverse-on-surface": "#9d9d9c",
+                      "outline": "#767776",
+                      "on-tertiary": "#eef3ff",
+                      "on-surface-variant": "#5b5c5b",
+                      "secondary": "#7d5300",
+                      "secondary-container": "#ffc878",
+                      "secondary-dim": "#6d4800",
+                      "on-tertiary-container": "#1d436e",
+                      "tertiary-fixed-dim": "#9bbef0",
+                      "primary-fixed": "#b3a1ff",
+                      "on-error": "#ffefef",
+                      "on-tertiary-fixed-variant": "#274c78",
+                      "inverse-primary": "#b3a1ff",
+                      "error-container": "#f74b6d",
+                      "on-primary-fixed-variant": "#3a277e",
+                      "on-primary-fixed": "#16004e",
+                      "inverse-surface": "#0d0e0e",
+                      "error": "#b41340",
+                      "on-surface": "#2e2f2f",
+                      "error-dim": "#a70138",
+                      "tertiary-container": "#a8cbfe",
+                      "surface-dim": "#d4d4d4",
+                      "on-primary": "#f6f0ff",
+                      "secondary-fixed-dim": "#f8b854",
+                      "on-primary-container": "#311c75",
+                      "outline-variant": "#adadac",
+                      "on-secondary-container": "#624000",
+                      "secondary-fixed": "#ffc878",
+                      "on-tertiary-fixed": "#002f58",
+                      "background": "#f7f6f5",
+                      "surface-container-low": "#f1f1f0",
+                      "surface-container": "#e8e8e7",
+                      "surface": "#f7f6f5",
+                      "on-secondary-fixed-variant": "#6f4900",
+                      "primary-fixed-dim": "#a593f0",
+                      "on-error-container": "#510017",
+                      "surface-bright": "#f7f6f5",
+                      "primary-container": "#b3a1ff",
+                      "on-background": "#2e2f2f",
+                      "surface-container-high": "#e2e2e1",
+                      "tertiary": "#395d8a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Manrope"],
+                      "label": ["Manrope"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 px-6 py-4 bg-[#f7f6f5] dark:bg-zinc-900 z-40 sticky">
+<div class="flex justify-between items-center w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User Profile Avatar" data-alt="portrait of a creative professional woman with a calm expression in a bright sunlit studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsYBgvLsWUYQD0K_2occGutsVxLEDnOMwqobRYsGiX-d6Ay5vAgKFN8txm9kQJp1beLSxWS3bYFupCM9yrAjtxEHnsyowZ4LrwLDO2PjD0SzZ2fWghHpZHyseIWr_duRYethHBGdLE0y43g5XRp00A5tPRg8u3JsJ-8E8KG8v2-x_tSMz0ecEgjQgQALO9U_jaRVtr2--87XavGlssbR1AxJPKnhkGUXsaA3p9bC6SJuqWHGBtV7TdC-7EJvXkRNXFM-7h4D50GA"/>
+</div>
+<h1 class="text-xl font-extrabold text-[#2e2f2f] dark:text-zinc-100 font-headline tracking-tight">Second Brain</h1>
+</div>
+<button class="text-[#5b5c5b] dark:text-zinc-400 hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 space-y-10">
+<!-- iOS Install Banner -->
+<section class="mt-4">
+<div class="bg-primary-container/20 border border-primary-container/10 p-5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="bg-white p-2 rounded-xl shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="ios_share">ios_share</span>
+</div>
+<p class="text-sm font-medium text-on-primary-container">
+                        Tap Share &gt; Add to Home Screen to install this app.
+                    </p>
+</div>
+<button class="text-on-primary-container/50 hover:text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+</section>
+<!-- Bento Grid: Today & Focus -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Hero Stats / Today Section -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-between min-h-[320px] relative overflow-hidden group">
+<div class="relative z-10">
+<span class="label-md font-bold text-primary tracking-widest uppercase text-xs">Today's Focus</span>
+<h2 class="text-4xl font-extrabold mt-2 leading-tight">Curate your thoughts,<br/>clear your mind.</h2>
+<div class="mt-6 flex flex-wrap gap-3">
+<span class="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full text-sm font-bold">3 Deep Work Sessions</span>
+<span class="px-4 py-2 bg-tertiary-container text-on-tertiary-container rounded-full text-sm font-bold">12 Ideas Captured</span>
+</div>
+</div>
+<!-- Abstract Decorative Element -->
+<div class="absolute -right-12 -bottom-12 w-64 h-64 bg-gradient-to-br from-primary-container to-tertiary-fixed rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
+</div>
+<!-- Mini Reminder Widget -->
+<div class="md:col-span-4 space-y-6">
+<div class="bg-[#ffbe59] bg-opacity-20 rounded-xl p-6 h-full border border-[#ffbe59]/10">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-[#7d5300] bg-white p-2 rounded-full" data-icon="lightbulb" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<span class="text-xs font-bold text-[#7d5300] uppercase tracking-widest">Morning Routine</span>
+</div>
+<h3 class="text-lg font-bold text-[#624000]">Review Weekly Goals</h3>
+<p class="text-sm mt-2 text-[#6f4900] opacity-80">Take 5 minutes to align your daily tasks with your long-term vision.</p>
+</div>
+</div>
+</section>
+<!-- Today's Reminders Section -->
+<section>
+<div class="flex justify-between items-end mb-6">
+<div>
+<h2 class="text-2xl font-extrabold font-headline">Today's Reminders</h2>
+<p class="text-on-surface-variant text-sm">Gentle nudges for a productive day</p>
+</div>
+<button class="text-primary font-bold text-sm hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Reminder Card 1: Blue -->
+<div class="bg-[#a9ccff] bg-opacity-20 p-6 rounded-lg border border-[#a9ccff]/20 hover:scale-[1.02] transition-transform duration-300">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-[#395d8a]" data-icon="water_drop">water_drop</span>
+<span class="text-[10px] font-extrabold uppercase tracking-widest text-[#395d8a]">Health</span>
+</div>
+<h4 class="font-bold text-[#1d436e] text-lg">Stay Hydrated</h4>
+<p class="text-sm text-[#274c78] mt-1">Drink 500ml of water before your next meeting.</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-xs font-bold text-[#395d8a]">10:30 AM</span>
+<button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xs" data-icon="done">done</span>
+</button>
+</div>
+</div>
+<!-- Reminder Card 2: Pink -->
+<div class="bg-[#ff9fff] bg-opacity-20 p-6 rounded-lg border border-[#ff9fff]/20 hover:scale-[1.02] transition-transform duration-300">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-[#b41340]" data-icon="favorite">favorite</span>
+<span class="text-[10px] font-extrabold uppercase tracking-widest text-[#b41340]">Personal</span>
+</div>
+<h4 class="font-bold text-[#510017] text-lg">Call Mom</h4>
+<p class="text-sm text-[#a70138] mt-1">Just a quick check-in to see how her weekend was.</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-xs font-bold text-[#b41340]">02:00 PM</span>
+<button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xs" data-icon="done">done</span>
+</button>
+</div>
+</div>
+<!-- Reminder Card 3: Lavender -->
+<div class="bg-[#b3a1ff] bg-opacity-20 p-6 rounded-lg border border-[#b3a1ff]/20 hover:scale-[1.02] transition-transform duration-300">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-[10px] font-extrabold uppercase tracking-widest text-primary">Creative</span>
+</div>
+<h4 class="font-bold text-on-primary-container text-lg">Sketch Session</h4>
+<p class="text-sm text-on-primary-fixed-variant mt-1">Brainstorm the new UI kit layout concepts.</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-xs font-bold text-primary">04:45 PM</span>
+<button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-xs" data-icon="done">done</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Ideas Section -->
+<section class="pb-12">
+<h2 class="text-2xl font-extrabold font-headline mb-6">Recent Ideas</h2>
+<div class="space-y-4">
+<!-- Idea Row 1 -->
+<div class="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
+<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Recent Idea Thumbnail" data-alt="overhead view of a minimalist desk setup with a laptop, a notebook, and a small succulent plant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtjFc7KuJblNEzl6PCWbf-3G9gm6ukKKiCTvcoiGb-UMLACAF1hs1m7qJFHcAo2GQeARuwBORuOOBvdXVtit_Z-27XeDrzm2-n3kPoo5fZAbknWosna48YNx82nht_AbIp0Ead_wO_PVrMcQAZIu8I8_azNu9ri0741hD6vndTvo3aXe2vsGLPMTW9DMqx-COmF9Z8qNH4BPu8Oppoc9RTPYapVLSG5TZHpusAgeoDpOerPqB4pqKI384IfTERwiBIaIy9YV0GgA"/>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-on-surface">Digital Minimalism Strategy</h5>
+<p class="text-sm text-on-surface-variant line-clamp-1">Exploring the intersection of productivity and intentional boredom...</p>
+</div>
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">2 hours ago</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Idea Row 2 -->
+<div class="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
+<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Recent Idea Thumbnail" data-alt="abstract artistic background with soft flowing shapes in shades of lavender and blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzv1fvSXeETwIEB0xTSd5cGnxFdta2AaO3VnwzFY_eWRhnEzRvKqkQMn58u8RhvMfPC0e54usPkOwtH71zjz58wHRKRtwg62j3GX-AjEHmlubifd6TAoElONJ4awoEprX_0hDfrRwukWi6o6hC-8Pa4ZTKBTwntXbiUBqUG9x3PcDITShg8bd8i55RQa3BS_GJaO_1m5PQovoMcTd_bAlG5mpiNrv8Pc98ARRnDRxsB6of75VEQFWVg0klu6CN-2Twt1DbndfWag"/>
+</div>
+<div class="flex-grow">
+<h5 class="font-bold text-on-surface">The "Second Brain" Framework</h5>
+<p class="text-sm text-on-surface-variant line-clamp-1">Refining the PARA method for personal knowledge management.</p>
+</div>
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Yesterday</p>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Quick Capture Bar -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-[60]">
+<div class="custom-glass rounded-full px-6 py-4 shadow-2xl border border-white/30 flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<input class="bg-transparent border-none focus:ring-0 w-full placeholder:text-on-surface-variant/50 font-medium" placeholder="Quick capture an idea..." type="text"/>
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant/60 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+<button class="text-on-surface-variant/60 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-center pb-8">
+<div class="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl shadow-[0_32px_64px_rgba(46,47,47,0.06)] fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md rounded-[3rem] px-4 py-3 flex justify-between items-center">
+<!-- Home (Active) -->
+<a class="flex items-center justify-center bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] text-white rounded-full w-12 h-12 tap-highlight-transparent active:scale-90 duration-300 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<!-- Lightbulb -->
+<a class="flex items-center justify-center text-[#5b5c5b] dark:text-zinc-400 w-12 h-12 hover:scale-110 transition-transform tap-highlight-transparent active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="lightbulb">lightbulb</span>
+</a>
+<!-- Shopping Cart -->
+<a class="flex items-center justify-center text-[#5b5c5b] dark:text-zinc-400 w-12 h-12 hover:scale-110 transition-transform tap-highlight-transparent active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</a>
+<!-- Fitness Center -->
+<a class="flex items-center justify-center text-[#5b5c5b] dark:text-zinc-400 w-12 h-12 hover:scale-110 transition-transform tap-highlight-transparent active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+</a>
+<!-- Work -->
+<a class="flex items-center justify-center text-[#5b5c5b] dark:text-zinc-400 w-12 h-12 hover:scale-110 transition-transform tap-highlight-transparent active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</a>
+</div>
+</nav>
+</body></html>
