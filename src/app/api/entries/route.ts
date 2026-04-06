@@ -51,14 +51,24 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, status, category } = await request.json();
+    const { id, status, category, clean_text, context_tags } = await request.json();
     if (!id) {
       return NextResponse.json({ error: 'Entry ID is required' }, { status: 400 });
     }
 
-    const updates: Record<string, string> = {};
+    const updates: Record<string, any> = {};
     if (status) updates.status = status;
-    if (category) updates.category = category;
+    
+    // If the user manually edits classification fields, mark it as human corrected 
+    // so the AI can learn from it in few-shot prompting
+    let isCorrection = false;
+    if (category) { updates.category = category; isCorrection = true; }
+    if (clean_text) { updates.clean_text = clean_text; isCorrection = true; }
+    if (context_tags) { updates.context_tags = context_tags; isCorrection = true; }
+    
+    if (isCorrection) {
+      updates.is_human_corrected = true;
+    }
 
     const { data, error } = await supabaseAdmin
       .from('brain_dump')

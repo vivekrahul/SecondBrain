@@ -24,8 +24,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    // Categorize with Groq AI
-    const categorized = await categorizeEntry(text.trim());
+    // Categorize with Groq AI using Few-Shot Learning from user history
+    const categorized = await categorizeEntry(text.trim(), authenticatedUserId);
 
     // Insert into brain_dump
     const { data, error } = await supabaseAdmin

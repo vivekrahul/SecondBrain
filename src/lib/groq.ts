@@ -1,5 +1,7 @@
 import type { GroqResponse } from './types';
 
+import { supabaseAdmin } from './supabase';
+
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -11,7 +13,7 @@ const SYSTEM_PROMPT = `You are categorizing a flat database. Read the user's inp
 
 No markdown. No explanation. Only the JSON object.`;
 
-export async function categorizeEntry(text: string): Promise<GroqResponse> {
+export async function categorizeEntry(text: string, userId?: string): Promise<GroqResponse> {
   if (!GROQ_API_KEY) {
     // Fallback when no API key is configured
     return {
@@ -23,6 +25,25 @@ export async function categorizeEntry(text: string): Promise<GroqResponse> {
   }
 
   const today = new Date().toISOString().split('T')[0];
+  let customContext = "";
+
+  if (userId) {
+    // Fetch user's recent manual corrections to use as few-shot learning
+    const { data: corrections } = await supabaseAdmin
+      .from('brain_dump')
+      .select('raw_text, category, context_tags, clean_text')
+      .eq('user_id', userId)
+      .eq('is_human_corrected', true)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (corrections && corrections.length > 0) {
+      customContext = "\n\nCRITICAL CONTEXT - The user has previously manually corrected categorizations. You MUST learn from these preferred patterns:\n";
+      corrections.forEach(c => {
+        customContext += `User Input: "${c.raw_text}" -> Category: "${c.category}", Tags: ${JSON.stringify(c.context_tags)}, Summary: "${c.clean_text}"\n`;
+      });
+    }
+  }
 
   const response = await fetch(GROQ_API_URL, {
     method: 'POST',
@@ -33,7 +54,7 @@ export async function categorizeEntry(text: string): Promise<GroqResponse> {
     body: JSON.stringify({
       model: 'llama-3.1-8b-instant',
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT + `\n\nToday's date is: ${today}` },
+        { role: 'system', content: SYSTEM_PROMPT + `\n\nToday's date is: ${today}` + customContext },
         { role: 'user', content: text },
       ],
       temperature: 0.1,

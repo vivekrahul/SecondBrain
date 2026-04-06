@@ -1,6 +1,7 @@
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
+import EntryOptions from '@/components/EntryOptions';
 
 const cardColors = [
   { bg: 'bg-primary-container', text: 'text-on-primary-container', tag: 'bg-white/30', label: 'text-on-primary-container', time: 'text-on-primary-container/40' },
@@ -62,9 +63,12 @@ export default async function IdeasPage() {
                       <div className="p-3 bg-primary/10 rounded-full">
                         <span className="material-symbols-outlined text-primary">lightbulb</span>
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h3 className="font-extrabold text-xl text-on-surface leading-none">Featured Insight</h3>
                         <span className="text-on-surface-variant text-xs font-bold tracking-widest uppercase">Deep Focus</span>
+                      </div>
+                      <div className="absolute top-6 right-6">
+                        <EntryOptions entry={idea} darkIcon={true} />
                       </div>
                     </div>
                     <p className="text-on-surface text-2xl font-bold leading-snug">
@@ -94,9 +98,12 @@ export default async function IdeasPage() {
                     <span className={`${color.text} text-xs font-bold uppercase tracking-widest px-3 py-1 ${color.tag} rounded-full`}>
                       Idea
                     </span>
-                    {idea.context_tags.includes('review') && (
-                      <span className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Review</span>
-                    )}
+                    <div className="flex items-center gap-1 group/options">
+                      {idea.context_tags.includes('review') && (
+                        <span className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Review</span>
+                      )}
+                      <EntryOptions entry={idea} />
+                    </div>
                   </div>
                   <p className={`${color.text} text-lg font-bold leading-tight`}>
                     {idea.clean_text || idea.raw_text}

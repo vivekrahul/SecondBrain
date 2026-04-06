@@ -1,6 +1,7 @@
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
+import EntryOptions from '@/components/EntryOptions';
 
 function groupByDate(entries: BrainDump[]) {
   const groups: { label: string; entries: BrainDump[] }[] = [];
@@ -97,9 +98,12 @@ export default async function LogsPage() {
                           <span className={`px-3 py-1 ${config.badge} text-on-surface text-[10px] font-bold tracking-widest uppercase rounded-full`}>
                             {entry.category}
                           </span>
-                          <span className="text-xs text-outline font-medium">
-                            {new Date(entry.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-outline font-medium">
+                              {new Date(entry.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            <EntryOptions entry={entry} darkIcon={true} />
+                          </div>
                         </div>
                         <h3 className="text-lg font-bold mb-1">{entry.clean_text || entry.raw_text}</h3>
                         <p className="text-on-surface-variant text-sm mb-4">{entry.raw_text}</p>

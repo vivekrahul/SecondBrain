@@ -79,3 +79,6 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name TEXT;
 
 -- Migration: Add has_seen_onboarding column to profiles
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS has_seen_onboarding BOOLEAN DEFAULT FALSE;
+
+-- Migration: Add is_human_corrected to brain_dump for AI learning
+ALTER TABLE brain_dump ADD COLUMN IF NOT EXISTS is_human_corrected BOOLEAN DEFAULT FALSE;

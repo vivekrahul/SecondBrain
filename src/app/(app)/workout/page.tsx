@@ -1,6 +1,7 @@
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
+import EntryOptions from '@/components/EntryOptions';
 
 export default async function WorkoutPage() {
   const auth = await verifyAuth();
@@ -106,6 +107,7 @@ export default async function WorkoutPage() {
                         {entry.status === 'Done' && (
                           <span className="status-green px-4 py-1 rounded-full text-xs font-bold uppercase tracking-tighter">Done</span>
                         )}
+                        <EntryOptions entry={entry} darkIcon={true} />
                       </div>
                     </div>
                     <p className="text-on-surface-variant">{entry.raw_text}</p>
