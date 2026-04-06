@@ -5,11 +5,20 @@ import { supabaseAdmin } from './supabase';
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-const SYSTEM_PROMPT = `You are categorizing a flat database. Read the user's input. Return ONLY a JSON object with these keys:
+const SYSTEM_PROMPT = `You are categorizing a personal to-do / brain dump database. Read the user's input. Return ONLY a JSON object with these keys:
 - Category: one of "Grocery", "Gym", "Idea", "Task", "Uncategorized"
 - Reminder_Date: calculate a future date if time is implied (e.g., "tomorrow", "next week", "in 3 days"), otherwise null. Format: YYYY-MM-DD. Use today's date as reference.
 - Tags: array of short lowercase keyword strings extracted from the input (e.g., ["urgent", "legday", "project"])
 - Clean_Text: a brief, clean summary of the input (1-2 sentences max)
+
+CRITICAL CLASSIFICATION RULES — follow these precisely:
+- "Task": Anything the user NEEDS TO DO, HAS TO DO, or SHOULD DO. Any sentence with an action verb implying personal obligation, errand, chore, phone call, appointment, follow-up, payment, meeting, or reminder. Examples: "call mom", "pay electricity bill", "take a shower", "schedule dentist", "reply to email", "submit report", "pick up laundry", "renew passport", "fix the sink", "book flight tickets".
+- "Idea": ONLY abstract thoughts, creative concepts, business ideas, shower thoughts, or hypothetical musings with NO immediate action required. Examples: "what if we built an app for dog walkers", "maybe I should start a podcast someday", "interesting concept: AI-powered journaling".
+- "Grocery": Items to buy for food/household. Examples: "buy milk", "eggs", "need detergent".
+- "Gym": Anything related to exercise, workouts, fitness tracking. Examples: "bench press 80kg", "leg day", "run 5km".
+- "Uncategorized": Only if nothing else fits.
+
+IMPORTANT: When in doubt between Task and Idea, ALWAYS choose Task. Most user inputs are things they need to do, not abstract ideas.
 
 No markdown. No explanation. Only the JSON object.`;
 
