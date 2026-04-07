@@ -72,9 +72,9 @@ export default async function DashboardPage() {
         {/* Desktop Header */}
         <header className="hidden md:flex justify-between items-center mb-12">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container">
+            <Link href="/settings" className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container active:scale-95 transition-transform hover:bg-surface-container-high" aria-label="Settings">
               <span className="material-symbols-outlined text-primary">psychiatry</span>
-            </div>
+            </Link>
             <h1 className="text-2xl font-semibold text-on-surface">
               Good morning, {displayName}. <span className="font-normal text-on-surface-variant">Here&apos;s your companion for today.</span>
             </h1>

@@ -51,9 +51,9 @@ export default function MobileHeader() {
           <span className="text-base font-bold text-on-surface tracking-tight">Second Brain</span>
         </div>
 
-        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container">
+        <Link href="/settings" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
           <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
-        </div>
+        </Link>
       </header>
 
       {/* Fullscreen Drawer Overlay */}
