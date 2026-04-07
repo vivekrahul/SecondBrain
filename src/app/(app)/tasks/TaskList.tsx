@@ -78,8 +78,8 @@ export default function TaskList({
                   className="w-6 h-6 border-2 border-tertiary/30 rounded-md flex items-center justify-center bg-white group-hover:border-tertiary transition-colors cursor-pointer flex-shrink-0" 
                   onClick={() => handleToggle(item, 'Done')}
                 />
-                <div className="flex-1 min-w-0 flex items-center cursor-pointer" onClick={() => handleToggle(item, 'Done')}>
-                  <span className="text-on-surface font-medium truncate">{item.clean_text || item.raw_text}</span>
+                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleToggle(item, 'Done')}>
+                  <span className="text-on-surface font-medium break-words line-clamp-2">{item.clean_text || item.raw_text}</span>
                   {item.context_tags && item.context_tags.length > 0 && (
                     <span className="ml-auto text-xs text-on-surface-variant/50 hidden sm:block whitespace-nowrap pl-2">
                       {item.context_tags.map(t => `#${t}`).join(' ')}
@@ -119,8 +119,8 @@ export default function TaskList({
                 >
                   <span className="material-symbols-outlined text-white text-sm">check</span>
                 </div>
-                <div className="flex-1 min-w-0 flex items-center cursor-pointer" onClick={() => handleToggle(item, 'Open')}>
-                  <span className="text-on-surface-variant font-medium line-through truncate">{item.clean_text || item.raw_text}</span>
+                <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleToggle(item, 'Open')}>
+                  <span className="text-on-surface-variant font-medium line-through break-words line-clamp-2">{item.clean_text || item.raw_text}</span>
                 </div>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setEditingEntry(item); }}

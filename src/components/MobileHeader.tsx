@@ -1,56 +1,136 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
 
-  // A simple overlay menu to emulate the "hamburger" drawer
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  // Close menu on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  const navItems = [
+    { href: '/', icon: 'home', label: 'Home' },
+    { href: '/ideas', icon: 'lightbulb', label: 'Ideas' },
+    { href: '/tasks', icon: 'task_alt', label: 'Tasks' },
+    { href: '/shopping', icon: 'shopping_cart', label: 'Shopping' },
+    { href: '/workout', icon: 'fitness_center', label: 'Gym' },
+    { href: '/logs', icon: 'history', label: 'Activity Log' },
+  ];
+
   return (
     <>
-      <header className="max-w-6xl mx-auto flex justify-between items-center mb-10 mt-2">
+      <header className="flex justify-between items-center py-2">
         <button 
           onClick={toggleMenu} 
-          className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded-lg active:bg-surface-container transition-colors"
+          aria-label="Open menu"
         >
-          <span className="material-symbols-outlined text-[#6C6861]">menu</span>
+          <span className="material-symbols-outlined text-on-surface-variant text-[22px]">menu</span>
         </button>
 
-        <div className="flex-1 flex justify-center items-center gap-2">
-          {/* Logo Centered */}
-          <span className="material-symbols-outlined text-primary">psychiatry</span>
-          <h1 className="text-lg font-bold text-on-surface tracking-tight">
-            Second Brain
-          </h1>
+        <div className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychiatry</span>
+          <span className="text-base font-bold text-on-surface tracking-tight">Second Brain</span>
         </div>
 
-        <div className="w-10 h-10 flex items-center justify-center">
-          {/* Spacer to keep center balanced, could hold profile image */}
-           <span className="material-symbols-outlined text-on-surface-variant">person</span>
+        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container">
+          <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
         </div>
       </header>
 
-      {/* Slide-out Menu Overlay */}
+      {/* Fullscreen Drawer Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex animate-fade-in-up">
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={toggleMenu} />
-          <nav className="relative w-64 bg-surface h-full shadow-2xl p-6 flex flex-col space-y-6 transform transition-transform animate-slide-in-right">
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-bold text-lg text-on-surface">Menu</span>
-              <button onClick={toggleMenu}>
-                <span className="material-symbols-outlined text-outline-variant">close</span>
+        <div className="fixed inset-0 z-[200]">
+          {/* Dim backdrop — blocks all interaction behind */}
+          <div 
+            className="absolute inset-0 bg-black/40"
+            onClick={toggleMenu}
+            aria-hidden="true"
+          />
+
+          {/* Drawer panel */}
+          <nav 
+            className="absolute top-0 left-0 w-72 h-full bg-surface shadow-2xl flex flex-col overflow-y-auto"
+            style={{ animation: 'slideDrawerIn 0.25s ease-out' }}
+          >
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-surface-variant">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>psychiatry</span>
+                <span className="font-bold text-on-surface">Second Brain</span>
+              </div>
+              <button 
+                onClick={toggleMenu}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors"
+              >
+                <span className="material-symbols-outlined text-on-surface-variant text-xl">close</span>
               </button>
             </div>
-            <Link href="/" className="flex items-center gap-3 text-primary font-bold"><span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>home</span> Home</Link>
-            <Link href="/ideas" className="flex items-center gap-3 text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined">lightbulb</span> Ideas</Link>
-            <Link href="/tasks" className="flex items-center gap-3 text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined">task_alt</span> Tasks</Link>
-            <Link href="/shopping" className="flex items-center gap-3 text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined">shopping_cart</span> Shopping</Link>
-            <Link href="/workout" className="flex items-center gap-3 text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined">fitness_center</span> Gym</Link>
-            <div className="flex-1" />
-            <Link href="/settings" className="flex items-center gap-3 text-on-surface-variant hover:text-on-surface"><span className="material-symbols-outlined">settings</span> Settings</Link>
+
+            {/* Nav Links */}
+            <div className="flex-1 px-4 py-4 space-y-1">
+              {navItems.map((item) => {
+                const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm ${
+                      isActive
+                        ? 'bg-primary/10 text-primary font-bold'
+                        : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                    }`}
+                  >
+                    <span 
+                      className="material-symbols-outlined text-xl"
+                      style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+                    >
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Bottom Section */}
+            <div className="px-4 pb-6 pt-2 border-t border-surface-variant space-y-1">
+              <Link
+                href="/settings"
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm ${
+                  pathname === '/settings'
+                    ? 'bg-primary/10 text-primary font-bold'
+                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-xl">settings</span>
+                Settings
+              </Link>
+              <Link
+                href="/insights"
+                className="flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+              >
+                <span className="material-symbols-outlined text-xl">analytics</span>
+                Insights
+              </Link>
+            </div>
           </nav>
         </div>
       )}

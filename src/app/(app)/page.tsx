@@ -69,11 +69,11 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="md:hidden pt-4 px-6 fixed top-0 w-full bg-surface/90 backdrop-blur-xl z-50">
+      <div className="md:hidden px-6 sticky top-0 w-full bg-surface z-50">
         <MobileHeader />
       </div>
 
-      <div className="px-6 pt-24 md:pt-12 max-w-6xl mx-auto pb-40 animate-page-enter">
+      <div className="px-6 pt-4 md:pt-12 max-w-6xl mx-auto pb-40 animate-page-enter">
         <PWAInstallPrompt />
 
         {/* Desktop Header */}
