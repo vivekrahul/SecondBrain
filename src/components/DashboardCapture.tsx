@@ -3,19 +3,27 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const categoryLabels: Record<string, string> = {
-  Grocery: 'Shopping',
-  Gym: 'Gym',
-  Idea: 'Ideas',
-  Task: 'Tasks',
-  Uncategorized: 'Logs',
+const toastMessages: Record<string, string> = {
+  Task: 'Task added ✓',
+  Idea: 'Saved to Ideas',
+  Grocery: 'Added to Shopping',
+  Gym: 'Logged to Health',
+  Uncategorized: 'Logged',
 };
 
 export default function DashboardCapture() {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [toast, setToast] = useState<{ category: string; text: string } | null>(null);
+  const [toasts, setToasts] = useState<{ id: number; message: string }[]>([]);
   const router = useRouter();
+
+  const addToast = (message: string) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 2500);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +41,8 @@ export default function DashboardCapture() {
         const data = await response.json();
         const entry = data.entry;
         const category = entry?.category || 'Uncategorized';
-        const cleanText = entry?.clean_text || text.trim();
-
         setText('');
-
-        // Show toast confirmation
-        setToast({ category, text: cleanText });
-        setTimeout(() => setToast(null), 3500);
-
+        addToast(toastMessages[category] || 'Logged');
         router.refresh();
       }
     } catch (error) {
@@ -74,20 +76,17 @@ export default function DashboardCapture() {
         The AI will organize your thought. You just need to write it down.
       </p>
 
-      {/* Toast Confirmation */}
-      {toast && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] animate-toast-in">
-          <div className="bg-on-surface text-surface rounded-xl px-5 py-3 shadow-xl flex items-center gap-3 max-w-sm">
-            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-            <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-widest opacity-70">
-                Added to {categoryLabels[toast.category] || toast.category}
-              </p>
-              <p className="text-sm font-medium truncate">{toast.text}</p>
+      {/* Toast Queue — bottom center */}
+      <div className="fixed bottom-28 left-1/2 z-[100] flex flex-col-reverse gap-2 pointer-events-none" style={{ transform: 'translateX(-50%)' }}>
+        {toasts.map((toast) => (
+          <div key={toast.id} className="animate-toast-bottom pointer-events-auto">
+            <div className="bg-on-surface text-surface rounded-full px-5 py-2.5 shadow-xl flex items-center gap-2.5 whitespace-nowrap">
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <span className="text-sm font-medium">{toast.message}</span>
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </section>
   );
 }

@@ -9,7 +9,7 @@ import type { BrainDump } from '@/lib/types';
 async function getDashboardData(userId: string) {
   const today = new Date().toISOString().split('T')[0];
 
-  const [tasksRes, ideasRes, rhythmsRes, logsRes] = await Promise.all([
+  const [tasksRes, ideasRes, shoppingRes] = await Promise.all([
     supabaseAdmin
       .from('brain_dump')
       .select('*')
@@ -30,23 +30,16 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
-      .in('category', ['Gym', 'Grocery'])
+      .eq('category', 'Grocery')
+      .eq('status', 'Open')
       .order('created_at', { ascending: false })
-      .limit(3),
-    supabaseAdmin
-      .from('brain_dump')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('category', 'Uncategorized')
-      .order('created_at', { ascending: false })
-      .limit(3)
+      .limit(4),
   ]);
 
   return {
     tasks: (tasksRes.data || []) as BrainDump[],
     ideas: (ideasRes.data || []) as BrainDump[],
-    rhythms: (rhythmsRes.data || []) as BrainDump[],
-    logs: (logsRes.data || []) as BrainDump[],
+    rhythms: (shoppingRes.data || []) as BrainDump[],
   };
 }
 
@@ -61,7 +54,7 @@ export default async function DashboardPage() {
     .single();
 
   const displayName = profile?.name || profile?.email?.split('@')[0] || 'User';
-  const { tasks, ideas, rhythms, logs } = await getDashboardData(auth.userId);
+  const { tasks, ideas, rhythms } = await getDashboardData(auth.userId);
 
   // Formatting date for header
   const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
@@ -150,58 +143,53 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Life Rhythms */}
-          <div className="cozy-card p-6 border-l-[3px] border-surface-variant">
-            <div className="flex items-center gap-3 mb-5">
-               <span className="material-symbols-outlined text-outline-variant">spa</span>
-               <h2 className="text-base text-on-surface">Life Rhythms</h2>
-            </div>
+          {/* Shopping */}
+          <div className="cozy-card p-6 border-l-[3px] border-secondary-dim">
+            <Link href="/shopping" className="flex justify-between hover:opacity-70 transition-opacity">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="material-symbols-outlined text-secondary">shopping_cart</span>
+                <h2 className="text-base text-on-surface">Shopping</h2>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant text-sm mt-1">open_in_new</span>
+            </Link>
+
             <div className="space-y-4 min-h-[140px]">
               {rhythms.length > 0 ? rhythms.map(r => (
-                <div key={r.id} className="flex items-center gap-3">
-                  <span className={`material-symbols-outlined ${r.category === 'Gym' ? 'text-secondary' : 'text-primary-dim'} text-[18px]`}>
-                    {r.category === 'Gym' ? 'check_circle' : 'shopping_cart'}
-                  </span>
+                <div key={r.id} className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-outline-variant text-[16px] mt-0.5">radio_button_unchecked</span>
                   <span className="text-sm line-clamp-1">{r.clean_text || r.raw_text}</span>
                 </div>
               )) : (
-                 <div className="text-outline-variant italic text-xs">No active habits logged.</div>
+                 <div className="text-outline-variant italic text-xs">No shopping items yet.</div>
               )}
             </div>
             <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant">
-              Logs mapped to your wellbeing.
+              Tap to view full list.
             </div>
           </div>
 
-          {/* Quiet Knowledge */}
-          <div className="cozy-card p-6 border-l-[3px] border-surface-variant">
-            <Link href="/logs" className="flex justify-between hover:opacity-70 transition-opacity">
-               <div className="flex items-center gap-3 mb-5">
-                   <span className="material-symbols-outlined text-outline-variant">menu_book</span>
-                   <h2 className="text-base text-on-surface">Quiet Knowledge</h2>
-               </div>
-               <span className="material-symbols-outlined text-outline-variant text-sm mt-1">open_in_new</span>
-            </Link>
-            
-            <div className="space-y-3 text-sm text-on-surface min-h-[140px]">
-              {logs.length > 0 ? logs.map(l => (
-                <div key={l.id} className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-outline-variant text-[16px] flex-shrink-0">article</span>
-                    <span className="truncate">{l.clean_text || l.raw_text}</span>
-                </div>
-              )) : (
-                <div className="text-outline-variant italic text-xs">Random knowledge base is quiet.</div>
-              )}
+          {/* Focus Mode CTA */}
+          <Link href="/focus" className="cozy-card p-6 border-l-[3px] border-primary-container group">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
+              <h2 className="text-base text-on-surface">Focus Mode</h2>
             </div>
-            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant">
-              Uncategorized brain dumps.
+            <div className="min-h-[140px] flex flex-col justify-center items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-primary text-3xl">timer</span>
+              </div>
+              <p className="text-sm text-on-surface font-medium mb-1">Need to deep-focus?</p>
+              <p className="text-xs text-on-surface-variant">Start a Pomodoro session or pick a task to lock in.</p>
             </div>
-          </div>
+            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-primary font-medium flex items-center gap-1">
+              Enter Focus <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </div>
+          </Link>
 
         </div>
 
         <footer className="max-w-4xl mx-auto p-6 cozy-card mt-12 text-center text-sm text-on-surface-variant">
-            <p>You&apos;ve offloaded <span className="font-bold text-primary">{tasks.length + ideas.length + logs.length + rhythms.length} thoughts</span> recently. Well done.</p>
+            <p>You&apos;ve offloaded <span className="font-bold text-primary">{tasks.length + ideas.length + rhythms.length} thoughts</span> recently. Well done.</p>
             <p className="text-xs text-outline-variant mt-2">The AI is connecting your notes in the background. <Link href="/insights" className="text-primary-dim font-medium hover:underline">View Map?</Link></p>
         </footer>
 

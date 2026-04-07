@@ -28,9 +28,10 @@ export default function MobileHeader() {
   const navItems = [
     { href: '/', icon: 'home', label: 'Home' },
     { href: '/ideas', icon: 'lightbulb', label: 'Ideas' },
+    { href: '/focus', icon: 'self_improvement', label: 'Focus Mode' },
     { href: '/tasks', icon: 'task_alt', label: 'Tasks' },
     { href: '/shopping', icon: 'shopping_cart', label: 'Shopping' },
-    { href: '/workout', icon: 'fitness_center', label: 'Gym' },
+    { href: '/workout', icon: 'fitness_center', label: 'Gym Log' },
     { href: '/logs', icon: 'history', label: 'Activity Log' },
   ];
 

@@ -6,8 +6,8 @@ import { usePathname, useRouter } from 'next/navigation';
 const navItems = [
   { href: '/', icon: 'home', label: 'Home' },
   { href: '/ideas', icon: 'lightbulb', label: 'Ideas' },
-  { href: '/shopping', icon: 'shopping_bag', label: 'Shopping' },
-  { href: '/workout', icon: 'fitness_center', label: 'Gym' },
+  { href: '/focus', icon: 'self_improvement', label: 'Focus' },
+  { href: '/shopping', icon: 'shopping_cart', label: 'Shopping' },
   { href: '/tasks', icon: 'task_alt', label: 'Tasks' },
 ];
 
@@ -61,6 +61,28 @@ export default function Sidebar({ displayName }: { displayName?: string }) {
 
       {/* Settings & Profile */}
       <div className="space-y-2">
+        <Link
+          href="/workout"
+          className={`flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
+            pathname === '/workout'
+              ? 'bg-surface-container-lowest text-primary font-bold'
+              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+          }`}
+        >
+          <span className="material-symbols-outlined">fitness_center</span>
+          <span className="text-sm font-medium">Gym Log</span>
+        </Link>
+        <Link
+          href="/logs"
+          className={`flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
+            pathname === '/logs'
+              ? 'bg-surface-container-lowest text-primary font-bold'
+              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+          }`}
+        >
+          <span className="material-symbols-outlined">history</span>
+          <span className="text-sm font-medium">Activity Log</span>
+        </Link>
         <div className="flex gap-2">
           <Link
             href="/settings"

@@ -3,30 +3,31 @@
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-const categoryIcons: Record<string, string> = {
-  Grocery: 'shopping_cart',
-  Gym: 'fitness_center',
-  Idea: 'lightbulb',
-  Task: 'task_alt',
-  Uncategorized: 'category',
-};
-
-const categoryRoutes: Record<string, string> = {
-  Grocery: '/shopping',
-  Gym: '/workout',
-  Idea: '/ideas',
-  Task: '/tasks',
-  Uncategorized: '/logs',
+const toastMessages: Record<string, string> = {
+  Task: 'Task added ✓',
+  Idea: 'Saved to Ideas',
+  Grocery: 'Added to Shopping',
+  Gym: 'Logged to Health',
+  Uncategorized: 'Logged',
 };
 
 export default function CaptureBar() {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [toast, setToast] = useState<{ category: string; text: string } | null>(null);
+  const [toasts, setToasts] = useState<{ id: number; message: string }[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
-  if (pathname === '/') return null;
+  // Hide on home page (DashboardCapture handles it there) and in focus mode
+  if (pathname === '/' || pathname === '/focus') return null;
+
+  const addToast = (message: string) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 2500);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,14 +45,8 @@ export default function CaptureBar() {
         const data = await response.json();
         const entry = data.entry;
         const category = entry?.category || 'Uncategorized';
-        const cleanText = entry?.clean_text || text.trim();
-
         setText('');
-        
-        // Show toast
-        setToast({ category, text: cleanText });
-        setTimeout(() => setToast(null), 3500);
-        
+        addToast(toastMessages[category] || 'Logged');
         router.refresh();
       }
     } catch (error) {
@@ -63,63 +58,37 @@ export default function CaptureBar() {
 
   return (
     <>
-      {/* Toast Notification */}
-      {toast && (
-        <div 
-          className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] animate-toast-in cursor-pointer"
-          onClick={() => {
-            const route = categoryRoutes[toast.category] || '/logs';
-            router.push(route);
-            setToast(null);
-          }}
-        >
-          <div className="bg-surface-container-lowest/95 backdrop-blur-xl rounded-2xl px-5 py-3 shadow-[0_12px_40px_rgba(46,47,47,0.15)] border border-white/50 flex items-center gap-3 max-w-sm">
-            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
-                {categoryIcons[toast.category] || 'check_circle'}
-              </span>
+      {/* Toast Queue — bottom center */}
+      <div className="fixed bottom-28 left-1/2 z-[100] flex flex-col-reverse gap-2 pointer-events-none" style={{ transform: 'translateX(-50%)' }}>
+        {toasts.map((toast) => (
+          <div key={toast.id} className="animate-toast-bottom pointer-events-auto">
+            <div className="bg-on-surface text-surface rounded-full px-5 py-2.5 shadow-xl flex items-center gap-2.5 whitespace-nowrap">
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+              <span className="text-sm font-medium">{toast.message}</span>
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-primary uppercase tracking-widest">
-                Added to {toast.category}
-              </p>
-              <p className="text-sm font-medium text-on-surface truncate">
-                {toast.text}
-              </p>
-            </div>
-            <span className="material-symbols-outlined text-on-surface-variant/40 text-sm flex-shrink-0">
-              arrow_forward
-            </span>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
 
       {/* Capture Bar */}
-      <div className="fixed bottom-24 md:bottom-12 left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-[60]">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-[92%] max-w-xl z-[60]">
         <form onSubmit={handleSubmit}>
-          <div className="bg-white/80 backdrop-blur-2xl p-2 rounded-full shadow-[0_32px_64px_rgba(46,47,47,0.12)] border border-white/50 flex items-center gap-2">
-            <button
-              type="button"
-              className="w-12 h-12 flex items-center justify-center text-primary flex-shrink-0"
-            >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                add_circle
-              </span>
-            </button>
+          <div className="bg-surface border border-surface-variant p-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-primary/60 pl-3 flex-shrink-0">edit_note</span>
             <input
               type="text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Capture a thought..."
-              className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface font-semibold placeholder:text-on-surface-variant/50 px-2 text-base outline-none"
+              className="flex-1 bg-transparent border-none focus:ring-0 text-on-surface font-medium placeholder:text-on-surface-variant/40 px-2 text-[15px] outline-none min-w-0"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={!text.trim() || isLoading}
-              className="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-all disabled:opacity-40 flex-shrink-0"
+              className="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-all disabled:opacity-30 flex-shrink-0"
             >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>
                 {isLoading ? 'hourglass_empty' : 'send'}
               </span>
             </button>
