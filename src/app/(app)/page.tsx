@@ -1,21 +1,23 @@
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
-import EntryOptions from '@/components/EntryOptions';
 import Link from 'next/link';
+import MobileHeader from '@/components/MobileHeader';
+import DashboardCapture from '@/components/DashboardCapture';
 import type { BrainDump } from '@/lib/types';
 
 async function getDashboardData(userId: string) {
   const today = new Date().toISOString().split('T')[0];
 
-  const [remindersResult, recentIdeasResult, recentTasksResult, statsResult, taskStatsResult] = await Promise.all([
+  const [tasksRes, ideasRes, rhythmsRes, logsRes] = await Promise.all([
     supabaseAdmin
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
-      .eq('reminder_date', today)
+      .eq('category', 'Task')
       .eq('status', 'Open')
-      .limit(3),
+      .order('created_at', { ascending: false })
+      .limit(5),
     supabaseAdmin
       .from('brain_dump')
       .select('*')
@@ -28,245 +30,182 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
-      .eq('category', 'Task')
-      .eq('status', 'Open')
+      .in('category', ['Gym', 'Grocery'])
       .order('created_at', { ascending: false })
-      .limit(5),
+      .limit(3),
     supabaseAdmin
       .from('brain_dump')
-      .select('id, category')
+      .select('*')
       .eq('user_id', userId)
-      .eq('status', 'Open'),
-    supabaseAdmin
-      .from('brain_dump')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('category', 'Task')
-      .eq('status', 'Open'),
+      .eq('category', 'Uncategorized')
+      .order('created_at', { ascending: false })
+      .limit(3)
   ]);
 
-  const allOpen = statsResult.data || [];
-  const ideaCount = allOpen.filter(e => e.category === 'Idea').length;
-  const taskCount = taskStatsResult.data?.length || 0;
-
   return {
-    reminders: (remindersResult.data || []) as BrainDump[],
-    recentIdeas: (recentIdeasResult.data || []) as BrainDump[],
-    recentTasks: (recentTasksResult.data || []) as BrainDump[],
-    openCount: allOpen.length,
-    ideaCount,
-    taskCount,
+    tasks: (tasksRes.data || []) as BrainDump[],
+    ideas: (ideasRes.data || []) as BrainDump[],
+    rhythms: (rhythmsRes.data || []) as BrainDump[],
+    logs: (logsRes.data || []) as BrainDump[],
   };
 }
-
-const reminderColors = [
-  { bg: 'bg-[#a9ccff]/20', border: 'border-[#a9ccff]/20', icon: 'water_drop', iconColor: 'text-[#395d8a]', label: 'text-[#395d8a]', title: 'text-[#1d436e]', desc: 'text-[#274c78]' },
-  { bg: 'bg-[#ff9fff]/20', border: 'border-[#ff9fff]/20', icon: 'favorite', iconColor: 'text-[#b41340]', label: 'text-[#b41340]', title: 'text-[#510017]', desc: 'text-[#a70138]' },
-  { bg: 'bg-primary-container/20', border: 'border-primary-container/20', icon: 'auto_awesome', iconColor: 'text-primary', label: 'text-primary', title: 'text-on-primary-container', desc: 'text-on-primary-fixed-variant' },
-];
 
 export default async function DashboardPage() {
   const auth = await verifyAuth();
   if (!auth) return null;
 
-  const { reminders, recentIdeas, recentTasks, openCount, ideaCount, taskCount } = await getDashboardData(auth.userId);
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('name, email')
+    .eq('id', auth.userId)
+    .single();
+
+  const displayName = profile?.name || profile?.email?.split('@')[0] || 'User';
+  const { tasks, ideas, rhythms, logs } = await getDashboardData(auth.userId);
+
+  // Formatting date for header
+  const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+  const todayString = new Date().toLocaleDateString('en-US', dateOptions);
 
   return (
     <>
-      {/* Top App Bar */}
-      <header className="w-full top-0 px-6 py-4 bg-surface z-40 sticky">
-        <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container bg-primary-container/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-xl">person</span>
-            </div>
-            <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
-          </div>
-          <div className="flex gap-2">
-            <Link href="/insights" className="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
-              <span className="material-symbols-outlined">analytics</span>
-            </Link>
-            <Link href="/settings" className="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
-              <span className="material-symbols-outlined">settings</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <div className="md:hidden pt-4 px-6 fixed top-0 w-full bg-surface/90 backdrop-blur-xl z-50">
+        <MobileHeader />
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 space-y-10 animate-page-enter">
-        {/* PWA Install Prompt */}
+      <div className="px-6 pt-24 md:pt-12 max-w-6xl mx-auto pb-40 animate-page-enter">
         <PWAInstallPrompt />
 
-        {/* === Bento Grid: Hero + Quick Stats === */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Hero — Today's Focus */}
-          <div className="md:col-span-8 bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-between min-h-[320px] relative overflow-hidden group">
-            <div className="relative z-10">
-              <span className="font-bold text-primary tracking-widest uppercase text-xs">Today&apos;s Focus</span>
-              <h2 className="text-4xl font-extrabold mt-2 leading-tight">
-                Curate your thoughts,<br />clear your mind.
-              </h2>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/logs" className="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full text-sm font-bold hover:scale-105 transition-transform active:scale-95">
-                  {openCount} Open Items
-                </Link>
-                <Link href="/ideas" className="px-4 py-2 bg-tertiary-container text-on-tertiary-container rounded-full text-sm font-bold hover:scale-105 transition-transform active:scale-95">
-                  {ideaCount} Ideas Captured
-                </Link>
-              </div>
+        {/* Desktop Header */}
+        <header className="hidden md:flex justify-between items-center mb-12">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container">
+              <span className="material-symbols-outlined text-primary">psychiatry</span>
             </div>
-            <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-gradient-to-br from-primary-container to-tertiary-fixed rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+            <h1 className="text-2xl font-semibold text-on-surface">
+              Good morning, {displayName}. <span className="font-normal text-on-surface-variant">Here&apos;s your companion for today.</span>
+            </h1>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-on-surface-variant font-medium">
+            <span className="material-symbols-outlined text-primary-dim text-lg">calendar_today</span>
+            <span>{todayString}</span>
+          </div>
+        </header>
+
+        {/* Input Bar */}
+        <DashboardCapture />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          {/* Focus Flow */}
+          <div className="cozy-card p-6 border-l-[3px] border-secondary-dim">
+            <Link href="/tasks" className="flex justify-between hover:opacity-70 transition-opacity">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="material-symbols-outlined text-secondary">eco</span>
+                <h2 className="text-base text-on-surface">Focus Flow</h2>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant text-sm mt-1">open_in_new</span>
+            </Link>
+            
+            <ul className="space-y-4 text-sm text-on-surface min-h-[140px]">
+              {tasks.length > 0 ? tasks.map(t => (
+                <li key={t.id} className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-outline-variant text-[16px] mt-0.5">radio_button_unchecked</span>
+                  <span className="line-clamp-2">{t.clean_text || t.raw_text}</span>
+                </li>
+              )) : (
+                <li className="text-outline-variant italic text-xs">No pending tasks. Mind is clear!</li>
+              )}
+            </ul>
+            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant flex items-center">
+              <span className="material-symbols-outlined text-[14px] mr-1">schedule</span>
+              {tasks.length} Focus Items Today
+            </div>
           </div>
 
-          {/* Quick Tip Widget */}
-          <div className="md:col-span-4 space-y-6">
-            <div className="bg-[#ffbe59]/20 rounded-xl p-6 h-full border border-[#ffbe59]/10 flex flex-col justify-between">
-              <div className="flex justify-between items-start mb-4">
-                <span className="material-symbols-outlined text-[#7d5300] bg-white p-2 rounded-full" style={{ fontVariationSettings: "'FILL' 1" }}>lightbulb</span>
-                <span className="text-xs font-bold text-[#7d5300] uppercase tracking-widest">Quick Stats</span>
+          {/* Idea Sparks */}
+          <div className="cozy-card p-6 border-l-[3px] border-primary-container">
+            <Link href="/ideas" className="flex justify-between hover:opacity-70 transition-opacity">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="material-symbols-outlined text-primary-dim">lightbulb</span>
+                <h2 className="text-base text-on-surface">Idea Sparks</h2>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-[#624000]">{taskCount} Active Tasks</h3>
-                <p className="text-sm mt-2 text-[#6f4900] opacity-80">
-                  {taskCount === 0 
-                    ? 'All clear! No pending tasks right now.'
-                    : 'Stay focused and check off your to-dos below.'}
-                </p>
-              </div>
-              <Link href="/tasks" className="mt-4 text-sm font-bold text-[#7d5300] flex items-center gap-1 hover:underline">
-                View Tasks <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </Link>
-            </div>
-          </div>
-        </section>
+              <span className="material-symbols-outlined text-outline-variant text-sm mt-1">open_in_new</span>
+            </Link>
 
-        {/* === Today's Reminders === */}
-        <section>
-          <div className="flex justify-between items-end mb-6">
-            <div>
-              <h2 className="text-2xl font-extrabold">Today&apos;s Reminders</h2>
-              <p className="text-on-surface-variant text-sm">Gentle nudges for a productive day</p>
-            </div>
-            <Link href="/logs" className="text-primary font-bold text-sm hover:underline">View All</Link>
-          </div>
-          {reminders.length === 0 ? (
-            <div className="bg-surface-container-low p-8 rounded-xl text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-2">notifications_off</span>
-              <p className="text-on-surface-variant">No reminders for today. Enjoy your clarity!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {reminders.map((reminder, i) => {
-                const cs = reminderColors[i % reminderColors.length];
-                return (
-                  <div key={reminder.id} className={`${cs.bg} p-6 rounded-lg border ${cs.border} hover:scale-[1.02] transition-transform duration-300 group`}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className={`material-symbols-outlined ${cs.iconColor}`}>{cs.icon}</span>
-                      <span className={`text-[10px] font-extrabold uppercase tracking-widest ${cs.label}`}>{reminder.category}</span>
-                    </div>
-                    <h4 className={`font-bold ${cs.title} text-lg`}>{reminder.clean_text || reminder.raw_text}</h4>
-                    {reminder.context_tags && reminder.context_tags.length > 0 && (
-                      <p className={`text-sm ${cs.desc} mt-1`}>{reminder.context_tags.map(t => `#${t}`).join(' ')}</p>
-                    )}
-                    <div className="mt-4 flex justify-between items-center">
-                      <span className={`text-xs font-bold ${cs.label}`}>
-                        {new Date(reminder.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
+            <div className="space-y-4 min-h-[140px]">
+              {ideas.length > 0 ? ideas.map(i => (
+                <div key={i.id} className="space-y-2">
+                  <div className="tag-amber px-3 py-1 rounded-md text-xs font-medium inline-block truncate max-w-full">
+                    {i.context_tags?.[0] || 'Unsorted'}
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
-
-        {/* === Recent Ideas === */}
-        <section>
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-2xl font-extrabold">Recent Ideas</h2>
-            <Link href="/ideas" className="text-primary font-bold text-sm hover:underline">View All</Link>
-          </div>
-          {recentIdeas.length === 0 ? (
-            <div className="bg-surface-container-low p-8 rounded-xl text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-2">lightbulb</span>
-              <p className="text-on-surface-variant">No ideas yet. Start capturing sparks of inspiration!</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {recentIdeas.map((idea) => (
-                <div key={idea.id} className="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
-                  <div className="w-16 h-16 rounded-lg bg-primary-container/30 flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-primary text-2xl">lightbulb</span>
-                  </div>
-                  <div className="flex-grow min-w-0">
-                    <h5 className="font-bold text-on-surface truncate">{idea.clean_text || idea.raw_text}</h5>
-                    {idea.context_tags && idea.context_tags.length > 0 && (
-                      <p className="text-sm text-on-surface-variant line-clamp-1">{idea.context_tags.map(t => `#${t}`).join(' ')}</p>
-                    )}
-                  </div>
-                  <div className="text-right hidden sm:block flex-shrink-0">
-                    <p className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">
-                      {getRelativeTime(idea.created_at)}
-                    </p>
-                  </div>
-                  <EntryOptions entry={idea} darkIcon={true} />
+                  <p className="text-sm text-on-surface line-clamp-2">{i.clean_text || i.raw_text}</p>
                 </div>
-              ))}
+              )) : (
+                <div className="text-outline-variant italic text-xs">Awaiting inspiration...</div>
+              )}
             </div>
-          )}
-        </section>
-
-        {/* === Active Tasks === */}
-        <section className="pb-12">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-2xl font-extrabold">Active Tasks</h2>
-            <Link href="/tasks" className="text-primary font-bold text-sm hover:underline">View All</Link>
+            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant">
+              + More sparks awaiting synthesis.
+            </div>
           </div>
-          {recentTasks.length === 0 ? (
-            <div className="bg-surface-container-low p-8 rounded-xl text-center">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant/30 mb-2">task_alt</span>
-              <p className="text-on-surface-variant">No active tasks. You&apos;re all caught up!</p>
+
+          {/* Life Rhythms */}
+          <div className="cozy-card p-6 border-l-[3px] border-surface-variant">
+            <div className="flex items-center gap-3 mb-5">
+               <span className="material-symbols-outlined text-outline-variant">spa</span>
+               <h2 className="text-base text-on-surface">Life Rhythms</h2>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {recentTasks.map((task) => (
-                <div key={task.id} className="group flex items-center gap-6 p-4 rounded-xl bg-surface-container-low hover:bg-white transition-all duration-300">
-                  <div className="w-16 h-16 rounded-lg bg-tertiary-container/30 flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-tertiary text-2xl">task_alt</span>
-                  </div>
-                  <div className="flex-grow min-w-0">
-                    <h5 className="font-bold text-on-surface truncate">{task.clean_text || task.raw_text}</h5>
-                    {task.context_tags && task.context_tags.length > 0 && (
-                      <p className="text-sm text-on-surface-variant line-clamp-1">{task.context_tags.map(t => `#${t}`).join(' ')}</p>
-                    )}
-                  </div>
-                  <div className="text-right hidden sm:block flex-shrink-0">
-                    <p className="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">
-                      {getRelativeTime(task.created_at)}
-                    </p>
-                  </div>
-                  <EntryOptions entry={task} darkIcon={true} />
+            <div className="space-y-4 min-h-[140px]">
+              {rhythms.length > 0 ? rhythms.map(r => (
+                <div key={r.id} className="flex items-center gap-3">
+                  <span className={`material-symbols-outlined ${r.category === 'Gym' ? 'text-secondary' : 'text-primary-dim'} text-[18px]`}>
+                    {r.category === 'Gym' ? 'check_circle' : 'shopping_cart'}
+                  </span>
+                  <span className="text-sm line-clamp-1">{r.clean_text || r.raw_text}</span>
                 </div>
-              ))}
+              )) : (
+                 <div className="text-outline-variant italic text-xs">No active habits logged.</div>
+              )}
             </div>
-          )}
-        </section>
+            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant">
+              Logs mapped to your wellbeing.
+            </div>
+          </div>
+
+          {/* Quiet Knowledge */}
+          <div className="cozy-card p-6 border-l-[3px] border-surface-variant">
+            <Link href="/logs" className="flex justify-between hover:opacity-70 transition-opacity">
+               <div className="flex items-center gap-3 mb-5">
+                   <span className="material-symbols-outlined text-outline-variant">menu_book</span>
+                   <h2 className="text-base text-on-surface">Quiet Knowledge</h2>
+               </div>
+               <span className="material-symbols-outlined text-outline-variant text-sm mt-1">open_in_new</span>
+            </Link>
+            
+            <div className="space-y-3 text-sm text-on-surface min-h-[140px]">
+              {logs.length > 0 ? logs.map(l => (
+                <div key={l.id} className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-outline-variant text-[16px] flex-shrink-0">article</span>
+                    <span className="truncate">{l.clean_text || l.raw_text}</span>
+                </div>
+              )) : (
+                <div className="text-outline-variant italic text-xs">Random knowledge base is quiet.</div>
+              )}
+            </div>
+            <div className="mt-6 pt-4 border-t border-surface-variant text-xs text-outline-variant">
+              Uncategorized brain dumps.
+            </div>
+          </div>
+
+        </div>
+
+        <footer className="max-w-4xl mx-auto p-6 cozy-card mt-12 text-center text-sm text-on-surface-variant">
+            <p>You&apos;ve offloaded <span className="font-bold text-primary">{tasks.length + ideas.length + logs.length + rhythms.length} thoughts</span> recently. Well done.</p>
+            <p className="text-xs text-outline-variant mt-2">The AI is connecting your notes in the background. <Link href="/insights" className="text-primary-dim font-medium hover:underline">View Map?</Link></p>
+        </footer>
+
       </div>
     </>
   );
-}
-
-function getRelativeTime(dateStr: string): string {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diffMs = now - then;
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }

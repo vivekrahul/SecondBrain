@@ -1,41 +1,28 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* === LUMINOUS DESIGN SYSTEM === */
+  /* === COZY COMPANION DESIGN SYSTEM (Notion-Inspired) === */
 
-  /* Primary Palette */
-  --color-primary: #5f4ea5;
-  --color-primary-dim: #534198;
-  --color-primary-container: #b3a1ff;
-  --color-primary-fixed: #b3a1ff;
-  --color-primary-fixed-dim: #a593f0;
-  --color-on-primary: #f6f0ff;
-  --color-on-primary-container: #311c75;
-  --color-on-primary-fixed: #16004e;
-  --color-on-primary-fixed-variant: #3a277e;
-  --color-inverse-primary: #b3a1ff;
+  /* Primary Palette (Warm Browns / Ambers) */
+  --color-primary: #8b5a2b;
+  --color-primary-dim: #d4a373;
+  --color-primary-container: #f6e1b0;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #92400e;
 
-  /* Secondary Palette */
-  --color-secondary: #7d5300;
-  --color-secondary-dim: #6d4800;
-  --color-secondary-container: #ffc878;
-  --color-secondary-fixed: #ffc878;
-  --color-secondary-fixed-dim: #f8b854;
-  --color-on-secondary: #fff0e1;
-  --color-on-secondary-container: #624000;
-  --color-on-secondary-fixed: #492f00;
-  --color-on-secondary-fixed-variant: #6f4900;
+  /* Secondary Palette (Sage / Greens) */
+  --color-secondary: #6c9970;
+  --color-secondary-dim: #a8c3a9;
+  --color-secondary-container: #e0e7e1;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #4f6c56;
 
-  /* Tertiary Palette */
-  --color-tertiary: #395d8a;
-  --color-tertiary-dim: #2d517d;
-  --color-tertiary-container: #a8cbfe;
-  --color-tertiary-fixed: #a8cbfe;
-  --color-tertiary-fixed-dim: #9bbef0;
-  --color-on-tertiary: #eef3ff;
-  --color-on-tertiary-container: #1d436e;
-  --color-on-tertiary-fixed: #002f58;
-  --color-on-tertiary-fixed-variant: #274c78;
+  /* Tertiary Palette (Linen / Warm Grays) */
+  --color-tertiary: #6c6861;
+  --color-tertiary-dim: #8c8982;
+  --color-tertiary-container: #f3efe9;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #5b5853;
 
   /* Error Palette */
   --color-error: #b41340;
@@ -44,52 +31,55 @@
   --color-on-error: #ffefef;
   --color-on-error-container: #510017;
 
-  /* Surface Palette */
-  --color-surface: #f7f6f5;
-  --color-surface-dim: #d4d4d4;
-  --color-surface-bright: #f7f6f5;
-  --color-surface-variant: #dcdddc;
-  --color-surface-tint: #5f4ea5;
-  --color-surface-container: #e8e8e7;
-  --color-surface-container-low: #f1f1f0;
-  --color-surface-container-high: #e2e2e1;
-  --color-surface-container-highest: #dcdddc;
+  /* Surface Palette (Warm Linen/Beige) */
+  --color-surface: #fbf9f6;
+  --color-surface-dim: #f3efe9;
+  --color-surface-bright: #ffffff;
+  --color-surface-variant: #e6dcd2;
+  --color-surface-tint: #8b5a2b;
   --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f9f6f2;
+  --color-surface-container: #f1e9e0;
+  --color-surface-container-high: #e6dcd2;
+  --color-surface-container-highest: #dcd0c4;
 
-  /* On Surface */
-  --color-on-surface: #2e2f2f;
-  --color-on-surface-variant: #5b5c5b;
-  --color-on-background: #2e2f2f;
-  --color-background: #f7f6f5;
-  --color-inverse-surface: #0d0e0e;
-  --color-inverse-on-surface: #9d9d9c;
+  /* On Surface (Charcoals) */
+  --color-on-surface: #37352f;
+  --color-on-surface-variant: #6c6861;
+  --color-on-background: #37352f;
+  --color-background: #fbf9f6;
 
   /* Outline */
-  --color-outline: #767776;
-  --color-outline-variant: #adadac;
+  --color-outline: #e6dcd2;
+  --color-outline-variant: #a8a29e;
 
   /* Custom Accents */
-  --color-gym-accent: #b2ebb6;
-  --color-career-accent: #b6eef5;
+  --color-gym-accent: #e0e7e1;
+  --color-career-accent: #f1e9e0;
 
   /* Border Radius */
-  --radius-DEFAULT: 1rem;
-  --radius-lg: 2rem;
-  --radius-xl: 3rem;
+  --radius-DEFAULT: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 
   /* Typography */
-  --font-headline: "Manrope", sans-serif;
-  --font-body: "Manrope", sans-serif;
-  --font-label: "Manrope", sans-serif;
+  --font-headline: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-label: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 /* === Base Styles === */
 body {
-  font-family: "Manrope", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Material Symbols */
@@ -98,47 +88,71 @@ body {
   vertical-align: middle;
 }
 
-/* Glass Card Effect */
-.glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+/* Cozy Notion Classes */
+.cozy-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(230, 220, 210, 0.7);
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.cozy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 90, 80, 0.05);
+}
+
+.journal-bar {
+  background: #ffffff;
+  border: 1px solid #e6dcd2;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-bar:focus-within {
+  border-color: #d4a373;
+  box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.15);
+}
+
+.tag-amber { background-color: #fef3c7; color: #92400e; }
+.tag-sage { background-color: #e0e7e1; color: #4f6c56; }
+.tag-linen { background-color: #f3efe9; color: #78716c; }
 
 /* Custom Glass for Navigation */
 .custom-glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(251, 249, 246, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(230, 220, 210, 0.5);
 }
 
 /* Gradient Backgrounds */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #5f4ea5 0%, #b3a1ff 100%);
+  background: linear-gradient(135deg, #8b5a2b 0%, #d4a373 100%);
 }
 
 /* Soft Shadow System */
 .soft-shadow {
-  box-shadow: 0 32px 64px -12px rgba(46, 47, 47, 0.08);
+  box-shadow: 0 12px 24px -12px rgba(100, 90, 80, 0.08);
 }
 
 .soft-shadow-sm {
-  box-shadow: 0 8px 32px 0 rgba(46, 47, 47, 0.04);
+  box-shadow: 0 4px 12px rgba(100, 90, 80, 0.05);
 }
 
 .soft-shadow-lg {
-  box-shadow: 0 32px 64px rgba(46, 47, 47, 0.06);
+  box-shadow: 0 24px 48px rgba(100, 90, 80, 0.06);
 }
 
 /* Status Badges */
 .status-green {
-  background-color: #b2ebb6;
-  color: #1b4d21;
+  background-color: #e0e7e1;
+  color: #4f6c56;
 }
 
 .status-cyan {
-  background-color: #b6eef5;
-  color: #1a4a50;
+  background-color: #f1e9e0;
+  color: #78716c;
 }
 
 /* Hide scrollbar utility */

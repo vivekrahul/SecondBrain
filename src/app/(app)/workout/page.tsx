@@ -2,6 +2,7 @@ import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
 import EntryOptions from '@/components/EntryOptions';
+import MobileHeader from '@/components/MobileHeader';
 
 export default async function WorkoutPage() {
   const auth = await verifyAuth();
@@ -20,12 +21,9 @@ export default async function WorkoutPage() {
 
   return (
     <>
-      {/* Top Bar */}
-      <header className="bg-surface w-full top-0 px-6 py-4 sticky z-40">
-        <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
-          <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
-        </div>
-      </header>
+      <div className="md:hidden pt-4 px-6 sticky top-0 w-full bg-surface/90 backdrop-blur-xl z-50">
+        <MobileHeader />
+      </div>
 
       <div className="px-6 pt-8 max-w-4xl mx-auto pb-40 animate-page-enter">
         {/* Hero */}

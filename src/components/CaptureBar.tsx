@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const categoryIcons: Record<string, string> = {
   Grocery: 'shopping_cart',
@@ -24,6 +24,9 @@ export default function CaptureBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState<{ category: string; text: string } | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  if (pathname === '/') return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

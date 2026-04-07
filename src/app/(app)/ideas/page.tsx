@@ -2,6 +2,7 @@ import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
 import EntryOptions from '@/components/EntryOptions';
+import MobileHeader from '@/components/MobileHeader';
 
 const cardColors = [
   { bg: 'bg-primary-container', text: 'text-on-primary-container', tag: 'bg-white/30', time: 'text-on-primary-container/40' },
@@ -29,12 +30,9 @@ export default async function IdeasPage() {
 
   return (
     <>
-      {/* Top Bar */}
-      <header className="sticky top-0 z-50 bg-surface w-full px-6 py-4">
-        <div className="flex justify-between items-center w-full max-w-3xl mx-auto">
-          <h1 className="font-extrabold text-xl tracking-tight text-on-surface md:hidden">Second Brain</h1>
-        </div>
-      </header>
+      <div className="md:hidden pt-4 px-6 sticky top-0 w-full bg-surface/90 backdrop-blur-xl z-50">
+        <MobileHeader />
+      </div>
 
       <div className="max-w-3xl mx-auto px-6 pt-4 pb-40 animate-page-enter">
         {/* Welcome Section */}
