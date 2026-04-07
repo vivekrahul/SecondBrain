@@ -30,7 +30,7 @@ export default async function ShoppingPage() {
         </div>
       </header>
 
-      <div className="px-6 max-w-7xl mx-auto space-y-8 pt-6 pb-40">
+      <div className="px-6 max-w-7xl mx-auto space-y-8 pt-6 pb-40 animate-page-enter">
         <ShoppingList
           openItems={openItems}
           doneItems={doneItems}

@@ -48,13 +48,13 @@ export default async function LogsPage() {
   return (
     <>
       {/* Top Bar */}
-      <header className="w-full top-0 px-6 py-4 bg-surface z-50 sticky">
+      <header className="bg-surface w-full top-0 px-6 py-4 sticky z-40">
         <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
           <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 mt-8 pb-40">
+      <div className="max-w-7xl mx-auto px-6 mt-8 pb-40 animate-page-enter">
         {/* Hero */}
         <section className="mb-10">
           <h2 className="text-4xl font-extrabold tracking-tight mb-2">Activity Stream</h2>

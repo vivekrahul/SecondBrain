@@ -15,15 +15,13 @@ export default async function SettingsPage() {
   return (
     <>
       {/* Top Bar */}
-      <header className="bg-surface/70 backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex justify-between items-center w-full px-6 py-4">
-          <span className="text-2xl font-black bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] bg-clip-text text-transparent md:hidden">
-            Second Brain
-          </span>
+      <header className="bg-surface w-full top-0 px-6 py-4 sticky z-40">
+        <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
+          <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
         </div>
       </header>
 
-      <div className="max-w-screen-md mx-auto px-6 mt-8 pb-40">
+      <div className="px-6 pt-8 max-w-xl mx-auto pb-40 animate-page-enter">
         {/* Hero Branding */}
         <section className="mb-12 text-center">
           <div className="inline-block p-1 bg-gradient-to-br from-primary to-primary-container rounded-full mb-6">

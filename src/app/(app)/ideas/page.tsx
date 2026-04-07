@@ -4,10 +4,10 @@ import type { BrainDump } from '@/lib/types';
 import EntryOptions from '@/components/EntryOptions';
 
 const cardColors = [
-  { bg: 'bg-primary-container', text: 'text-on-primary-container', tag: 'bg-white/30', label: 'text-on-primary-container', time: 'text-on-primary-container/40' },
-  { bg: 'bg-tertiary-container', text: 'text-on-tertiary-container', tag: 'bg-white/30', label: 'text-on-tertiary-container', time: 'text-on-tertiary-container/40' },
-  { bg: 'bg-secondary-container', text: 'text-on-secondary-container', tag: 'bg-white/30', label: 'text-on-secondary-container', time: 'text-on-secondary-container/40' },
-  { bg: 'bg-[#ff9fff]', text: 'text-[#620062]', tag: 'bg-white/30', label: 'text-[#620062]', time: 'text-[#620062]/40' },
+  { bg: 'bg-primary-container', text: 'text-on-primary-container', tag: 'bg-white/30', time: 'text-on-primary-container/40' },
+  { bg: 'bg-tertiary-container', text: 'text-on-tertiary-container', tag: 'bg-white/30', time: 'text-on-tertiary-container/40' },
+  { bg: 'bg-secondary-container', text: 'text-on-secondary-container', tag: 'bg-white/30', time: 'text-on-secondary-container/40' },
+  { bg: 'bg-[#ff9fff]', text: 'text-[#620062]', tag: 'bg-white/30', time: 'text-[#620062]/40' },
 ];
 
 const rotations = ['rotate-1', '-rotate-1', 'rotate-1', '-rotate-2'];
@@ -36,7 +36,7 @@ export default async function IdeasPage() {
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto px-6 pt-4 pb-40">
+      <div className="max-w-3xl mx-auto px-6 pt-4 pb-40 animate-page-enter">
         {/* Welcome Section */}
         <section className="mb-10">
           <h2 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Curated Thoughts</h2>
@@ -58,7 +58,7 @@ export default async function IdeasPage() {
               // Every 5th card is a featured glass card
               if (i > 0 && i % 5 === 0) {
                 return (
-                  <article key={idea.id} className="col-span-1 md:col-span-2 bg-white/70 backdrop-blur-xl border border-white/40 p-10 rounded-xl shadow-[0_32px_64px_rgba(46,47,47,0.04)] my-6 animate-fade-in-up">
+                  <article key={idea.id} className="group relative col-span-1 md:col-span-2 bg-white/70 backdrop-blur-xl border border-white/40 p-10 rounded-xl shadow-[0_32px_64px_rgba(46,47,47,0.04)] my-6 animate-fade-in-up">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="p-3 bg-primary/10 rounded-full">
                         <span className="material-symbols-outlined text-primary">lightbulb</span>
@@ -67,9 +67,7 @@ export default async function IdeasPage() {
                         <h3 className="font-extrabold text-xl text-on-surface leading-none">Featured Insight</h3>
                         <span className="text-on-surface-variant text-xs font-bold tracking-widest uppercase">Deep Focus</span>
                       </div>
-                      <div className="absolute top-6 right-6">
-                        <EntryOptions entry={idea} darkIcon={true} />
-                      </div>
+                      <EntryOptions entry={idea} darkIcon={true} />
                     </div>
                     <p className="text-on-surface text-2xl font-bold leading-snug">
                       {idea.clean_text || idea.raw_text}
@@ -91,14 +89,14 @@ export default async function IdeasPage() {
               return (
                 <article
                   key={idea.id}
-                  className={`${color.bg} p-8 rounded-lg flex flex-col gap-4 transform ${rotation} hover:rotate-0 transition-transform duration-300 animate-fade-in-up`}
+                  className={`group ${color.bg} p-8 rounded-lg flex flex-col gap-4 transform ${rotation} hover:rotate-0 transition-transform duration-300 animate-fade-in-up relative`}
                   style={{ animationDelay: `${i * 0.05}s` }}
                 >
                   <div className="flex justify-between items-start">
                     <span className={`${color.text} text-xs font-bold uppercase tracking-widest px-3 py-1 ${color.tag} rounded-full`}>
                       Idea
                     </span>
-                    <div className="flex items-center gap-1 group/options">
+                    <div className="flex items-center gap-1">
                       {idea.context_tags.includes('review') && (
                         <span className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Review</span>
                       )}

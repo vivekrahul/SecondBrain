@@ -21,15 +21,13 @@ export default async function WorkoutPage() {
   return (
     <>
       {/* Top Bar */}
-      <header className="bg-surface/70 backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex justify-between items-center w-full px-6 py-4">
-          <span className="text-2xl font-black bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] bg-clip-text text-transparent md:hidden">
-            Luminous
-          </span>
+      <header className="bg-surface w-full top-0 px-6 py-4 sticky z-40">
+        <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
+          <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
         </div>
       </header>
 
-      <div className="px-6 pt-8 max-w-4xl mx-auto pb-40">
+      <div className="px-6 pt-8 max-w-4xl mx-auto pb-40 animate-page-enter">
         {/* Hero */}
         <section className="mb-12">
           <h1 className="text-5xl font-extrabold tracking-tight mb-2">Training Lab</h1>

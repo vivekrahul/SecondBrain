@@ -19,15 +19,13 @@ export default async function TasksPage() {
 
   return (
     <>
-      <header className="bg-surface/70 backdrop-blur-xl sticky top-0 z-50">
-        <div className="flex justify-between items-center w-full px-6 py-4">
-          <span className="text-2xl font-black bg-gradient-to-br from-[#5f4ea5] to-[#b3a1ff] bg-clip-text text-transparent md:hidden">
-            Second Brain
-          </span>
+      <header className="bg-surface w-full top-0 px-6 py-4 sticky z-40">
+        <div className="flex justify-between items-center w-full max-w-7xl mx-auto">
+          <h1 className="text-xl font-extrabold text-on-surface tracking-tight md:hidden">Second Brain</h1>
         </div>
       </header>
 
-      <div className="px-6 pt-8 max-w-screen-md mx-auto pb-40">
+      <div className="px-6 pt-8 max-w-screen-md mx-auto pb-40 animate-page-enter">
         <section className="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="text-5xl font-extrabold tracking-tight mb-2">Tasks</h1>
