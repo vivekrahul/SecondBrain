@@ -42,18 +42,20 @@ export async function POST(request: Request) {
     // Categorize with Groq AI
     const categorized = await categorizeEntry(text);
 
+    const recordsToInsert = categorized.entries.map((entry) => ({
+      user_id: profile.id,
+      raw_text: text,
+      category: entry.Category,
+      status: 'Open',
+      reminder_date: entry.Reminder_Date,
+      context_tags: entry.Tags,
+      clean_text: entry.Clean_Text,
+    }));
+
     // Insert into brain_dump
     const { error: insertError } = await supabaseAdmin
       .from('brain_dump')
-      .insert({
-        user_id: profile.id,
-        raw_text: text,
-        category: categorized.Category,
-        status: 'Open',
-        reminder_date: categorized.Reminder_Date,
-        context_tags: categorized.Tags,
-        clean_text: categorized.Clean_Text,
-      });
+      .insert(recordsToInsert);
 
     if (insertError) {
       console.error('Insert error:', insertError);
@@ -62,13 +64,14 @@ export async function POST(request: Request) {
     }
 
     // Send confirmation
-    const tags = categorized.Tags.length > 0 ? categorized.Tags.map(t => `#${t}`).join(' ') : '';
-    const reminder = categorized.Reminder_Date ? `\n📅 Reminder: ${categorized.Reminder_Date}` : '';
+    let replyText = `✅ <b>Captured!</b>\n`;
+    categorized.entries.forEach(entry => {
+      const tags = entry.Tags.length > 0 ? entry.Tags.map(t => `#${t}`).join(' ') : '';
+      const reminder = entry.Reminder_Date ? ` (📅 ${entry.Reminder_Date})` : '';
+      replyText += `\n📂 <b>${entry.Category}</b>: ${entry.Clean_Text}${reminder} ${tags}`;
+    });
     
-    await sendTelegramMessage(
-      chatId,
-      `✅ <b>Captured!</b>\n\n📂 ${categorized.Category}\n💡 ${categorized.Clean_Text}${reminder}\n${tags}`
-    );
+    await sendTelegramMessage(chatId, replyText);
 
     return NextResponse.json({ ok: true });
   } catch (error) {

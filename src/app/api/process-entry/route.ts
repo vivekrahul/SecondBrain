@@ -27,27 +27,29 @@ export async function POST(request: Request) {
     // Categorize with Groq AI using Few-Shot Learning from user history
     const categorized = await categorizeEntry(text.trim(), authenticatedUserId);
 
+    // Map the returned array of objects for Supabase insertion
+    const recordsToInsert = categorized.entries.map((entry) => ({
+      user_id: authenticatedUserId,
+      raw_text: text.trim(), // keeping raw_text for all, since it spawned them
+      category: entry.Category,
+      status: 'Open',
+      reminder_date: entry.Reminder_Date,
+      context_tags: entry.Tags,
+      clean_text: entry.Clean_Text,
+    }));
+
     // Insert into brain_dump
     const { data, error } = await supabaseAdmin
       .from('brain_dump')
-      .insert({
-        user_id: authenticatedUserId,
-        raw_text: text.trim(),
-        category: categorized.Category,
-        status: 'Open',
-        reminder_date: categorized.Reminder_Date,
-        context_tags: categorized.Tags,
-        clean_text: categorized.Clean_Text,
-      })
-      .select()
-      .single();
+      .insert(recordsToInsert)
+      .select();
 
     if (error) {
       console.error('Insert error:', error);
-      return NextResponse.json({ error: 'Failed to save entry' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to save entries' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, entry: data });
+    return NextResponse.json({ success: true, entries: data });
   } catch (error) {
     console.error('Process entry error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

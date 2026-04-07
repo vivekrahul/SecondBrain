@@ -43,10 +43,19 @@ export default function CaptureBar() {
 
       if (response.ok) {
         const data = await response.json();
-        const entry = data.entry;
-        const category = entry?.category || 'Uncategorized';
+        const entries = data.entries || [];
+        
         setText('');
-        addToast(toastMessages[category] || 'Logged');
+        
+        // Queue a toast for each parsed item
+        entries.forEach((entry: any, index: number) => {
+          // slight delay so toasts stack sequentially instead of precisely simultaneously
+          setTimeout(() => {
+            const category = entry?.category || 'Uncategorized';
+            addToast(toastMessages[category] || 'Logged');
+          }, index * 150);
+        });
+        
         router.refresh();
       }
     } catch (error) {
@@ -58,10 +67,10 @@ export default function CaptureBar() {
 
   return (
     <>
-      {/* Toast Queue — bottom center */}
-      <div className="fixed bottom-28 left-1/2 z-[100] flex flex-col-reverse gap-2 pointer-events-none" style={{ transform: 'translateX(-50%)' }}>
+      {/* Toast Queue — top center to avoid mobile keyboard */}
+      <div className="fixed top-20 left-1/2 z-[9999] flex flex-col gap-2 pointer-events-none" style={{ transform: 'translateX(-50%)' }}>
         {toasts.map((toast) => (
-          <div key={toast.id} className="animate-toast-bottom pointer-events-auto">
+          <div key={toast.id} className="animate-toast-top pointer-events-auto">
             <div className="bg-on-surface text-surface rounded-full px-5 py-2.5 shadow-xl flex items-center gap-2.5 whitespace-nowrap">
               <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
               <span className="text-sm font-medium">{toast.message}</span>

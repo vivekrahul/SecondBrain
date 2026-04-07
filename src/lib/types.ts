@@ -18,11 +18,15 @@ export interface BrainDump {
   clean_text: string | null;
 }
 
-export interface GroqResponse {
+export interface GroqEntry {
   Category: string;
   Reminder_Date: string | null;
   Tags: string[];
   Clean_Text: string;
+}
+
+export interface GroqResponse {
+  entries: GroqEntry[];
 }
 
 export interface ProcessEntryPayload {

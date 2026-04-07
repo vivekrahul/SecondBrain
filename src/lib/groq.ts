@@ -5,39 +5,69 @@ import { supabaseAdmin } from './supabase';
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-const SYSTEM_PROMPT = `You are categorizing a personal to-do / brain dump database. Read the user's input. Return ONLY a JSON object with these keys:
+const SYSTEM_PROMPT = `You are categorizing a personal to-do / brain dump database. Formulate your response based ONLY on the user's input. The user might provide a single thought OR a complex sentence containing multiple separate thoughts, tasks, or items.
+
+Your job is to break down the user's input into logical, discrete blocks. If the user mentions multiple tasks, ideas, or groceries, separate them!
+Return ONLY a JSON object with the key "entries", containing an array of objects. Each object MUST have these keys:
 - Category: one of "Grocery", "Gym", "Idea", "Task", "Uncategorized"
 - Reminder_Date: calculate a future date if time is implied (e.g., "tomorrow", "next week", "in 3 days"), otherwise null. Format: YYYY-MM-DD. Use today's date as reference.
 - Tags: array of short lowercase keyword strings extracted from the input (e.g., ["urgent", "legday", "project"])
-- Clean_Text: a brief, clean summary of the input (1-2 sentences max)
+- Clean_Text: a brief, clean summary of ONLY this specific item (1-2 sentences max)
 
 CRITICAL CLASSIFICATION RULES — follow these precisely:
-- "Task": Anything the user NEEDS TO DO, HAS TO DO, or SHOULD DO. Any sentence with an action verb implying personal obligation, errand, chore, phone call, appointment, follow-up, payment, meeting, or reminder. Examples: "call mom", "pay electricity bill", "take a shower", "schedule dentist", "reply to email", "submit report", "pick up laundry", "renew passport", "fix the sink", "book flight tickets".
-- "Idea": ONLY abstract thoughts, creative concepts, business ideas, shower thoughts, or hypothetical musings with NO immediate action required. Examples: "what if we built an app for dog walkers", "maybe I should start a podcast someday", "interesting concept: AI-powered journaling".
-- "Grocery": Items to buy for food/household. Examples: "buy milk", "eggs", "need detergent".
-- "Gym": Anything related to exercise, workouts, fitness tracking. Examples: "bench press 80kg", "leg day", "run 5km".
+- "Task": Anything the user NEEDS TO DO, HAS TO DO, or SHOULD DO. Examples: "call mom", "pay electricity bill", "renew passport".
+- "Idea": ONLY abstract thoughts, creative concepts, business ideas with NO immediate action required.
+- "Grocery": Items to buy for food/household. (e.g., "buy milk", "eggs"). If a user says "buy milk and eggs", split this into TWO Grocery entries.
+- "Gym": Anything related to exercise, workouts, fitness tracking.
 - "Uncategorized": Only if nothing else fits.
 
-IMPORTANT: When in doubt between Task and Idea, ALWAYS choose Task. Most user inputs are things they need to do, not abstract ideas.
+IMPORTANT: When in doubt between Task and Idea, ALWAYS choose Task. Most user inputs are things they need to do.
+
+Example User Input: "remind me to call sarah tomorrow and also buy bread. idea: what if we launch a newsletter"
+Example Output:
+{
+  "entries": [
+    {
+      "Category": "Task",
+      "Reminder_Date": "2026-04-08",
+      "Tags": ["call", "sarah"],
+      "Clean_Text": "Call Sarah"
+    },
+    {
+      "Category": "Grocery",
+      "Reminder_Date": null,
+      "Tags": ["bread"],
+      "Clean_Text": "Bread"
+    },
+    {
+      "Category": "Idea",
+      "Reminder_Date": null,
+      "Tags": ["newsletter", "launch"],
+      "Clean_Text": "Launch a newsletter"
+    }
+  ]
+}
 
 No markdown. No explanation. Only the JSON object.`;
 
 export async function categorizeEntry(text: string, userId?: string): Promise<GroqResponse> {
-  if (!GROQ_API_KEY) {
-    // Fallback when no API key is configured
-    return {
+  const fallbackResponse: GroqResponse = {
+    entries: [{
       Category: 'Uncategorized',
       Reminder_Date: null,
       Tags: [],
       Clean_Text: text,
-    };
+    }]
+  };
+
+  if (!GROQ_API_KEY) {
+    return fallbackResponse;
   }
 
   const today = new Date().toISOString().split('T')[0];
   let customContext = "";
 
   if (userId) {
-    // Fetch user's recent manual corrections to use as few-shot learning
     const { data: corrections } = await supabaseAdmin
       .from('brain_dump')
       .select('raw_text, category, context_tags, clean_text')
@@ -67,49 +97,45 @@ export async function categorizeEntry(text: string, userId?: string): Promise<Gr
         { role: 'user', content: text },
       ],
       temperature: 0.1,
-      max_tokens: 256,
+      max_tokens: 512,
       response_format: { type: 'json_object' },
     }),
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    console.error('Groq API error:', error);
-    return {
-      Category: 'Uncategorized',
-      Reminder_Date: null,
-      Tags: [],
-      Clean_Text: text,
-    };
+    console.error('Groq API error:', await response.text());
+    return fallbackResponse;
   }
 
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content;
 
   try {
-    const parsed = JSON.parse(content) as GroqResponse;
-    // Validate and sanitize
+    const parsed = JSON.parse(content) as { entries: any[] };
+    if (!parsed.entries || !Array.isArray(parsed.entries)) {
+       throw new Error('Missing entries array');
+    }
+
     const validCategories = ['Grocery', 'Gym', 'Idea', 'Task', 'Uncategorized'];
-    if (!validCategories.includes(parsed.Category)) {
-      parsed.Category = 'Uncategorized';
-    }
-    if (parsed.Reminder_Date && !/^\d{4}-\d{2}-\d{2}$/.test(parsed.Reminder_Date)) {
-      parsed.Reminder_Date = null;
-    }
-    if (!Array.isArray(parsed.Tags)) {
-      parsed.Tags = [];
-    }
-    if (!parsed.Clean_Text) {
-      parsed.Clean_Text = text;
-    }
-    return parsed;
-  } catch {
-    console.error('Failed to parse Groq response:', content);
-    return {
-      Category: 'Uncategorized',
-      Reminder_Date: null,
-      Tags: [],
-      Clean_Text: text,
-    };
+    
+    // Validate each entry
+    const sanitizedEntries = parsed.entries.map((entry: any) => {
+      let category = validCategories.includes(entry?.Category) ? entry.Category : 'Uncategorized';
+      let rDate = (entry?.Reminder_Date && /^\d{4}-\d{2}-\d{2}$/.test(entry.Reminder_Date)) ? entry.Reminder_Date : null;
+      let tags = Array.isArray(entry?.Tags) ? entry.Tags : [];
+      let cText = entry?.Clean_Text || text;
+
+      return {
+        Category: category,
+        Reminder_Date: rDate,
+        Tags: tags,
+        Clean_Text: cText
+      };
+    });
+
+    return { entries: sanitizedEntries };
+  } catch (err) {
+    console.error('Failed to parse Groq response:', content, err);
+    return fallbackResponse;
   }
 }
