@@ -125,22 +125,22 @@ export default function TaskList({
             </span>
           </div>
 
-          <ul className="space-y-1.5">
+          <ul className="space-y-1.5 overflow-x-hidden">
             {filteredOpenItems.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center gap-3 bg-surface-container-lowest p-3 sm:p-4 rounded-xl group hover:shadow-sm transition-shadow overflow-hidden"
+                className="flex items-start gap-3 bg-surface-container-lowest p-3 sm:p-4 rounded-xl group hover:shadow-sm transition-shadow"
               >
                 {/* Checkbox */}
                 <button
                   type="button"
                   onClick={() => handleToggle(item, 'Done')}
-                  className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-outline-variant/40 rounded-md flex items-center justify-center bg-transparent hover:border-primary hover:bg-primary/5 transition-colors flex-shrink-0"
+                  className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-outline-variant/40 rounded-md flex items-center justify-center bg-transparent hover:border-primary hover:bg-primary/5 transition-colors flex-shrink-0 mt-0.5"
                   aria-label="Mark as done"
                 />
 
                 {/* Priority dots — vertical stack */}
-                <div className="flex flex-col items-center gap-[3px] flex-shrink-0 py-0.5">
+                <div className="flex flex-col items-center gap-[3px] flex-shrink-0 mt-0.5">
                   <PriorityDot item={item} level="high" />
                   <PriorityDot item={item} level="medium" />
                   <PriorityDot item={item} level="low" />
@@ -149,10 +149,10 @@ export default function TaskList({
                 {/* Task content — takes ALL remaining space */}
                 <button
                   type="button"
-                  className="flex-1 min-w-0 text-left overflow-hidden"
+                  className="flex-1 min-w-0 text-left"
                   onClick={() => setEditingEntry(item)}
                 >
-                  <p className="text-sm sm:text-[15px] text-on-surface font-medium leading-snug truncate">
+                  <p className="text-sm sm:text-[15px] text-on-surface font-medium leading-snug line-clamp-2 sm:line-clamp-1">
                     {item.clean_text || item.raw_text}
                   </p>
                   {(item.reminder_date || (item.context_tags && item.context_tags.length > 0)) && (
@@ -164,7 +164,7 @@ export default function TaskList({
                         </span>
                       )}
                       {item.context_tags && item.context_tags.length > 0 && (
-                        <span className="text-[10px] text-on-surface-variant/40 truncate">
+                        <span className="text-[10px] text-on-surface-variant/40">
                           {item.context_tags.slice(0, 2).map(t => `#${t}`).join(' ')}
                         </span>
                       )}
