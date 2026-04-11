@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
@@ -8,10 +9,14 @@ export default async function ShoppingPage() {
   const auth = await verifyAuth();
   if (!auth) return null;
 
+  const cookieStore = await cookies();
+  const workspace = cookieStore.get('sb-workspace-mode')?.value || 'home';
+
   const { data } = await supabaseAdmin
     .from('brain_dump')
     .select('*')
     .eq('user_id', auth.userId)
+    .eq('workspace', workspace)
     .eq('category', 'Grocery')
     .order('created_at', { ascending: false })
     .limit(50);

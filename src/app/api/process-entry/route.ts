@@ -7,7 +7,7 @@ import { contentHash } from '@/lib/hash';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { text, userId } = body;
+    const { text, userId, workspace = 'home' } = body;
 
     // If userId is provided (from webhook), use it directly.
     // Otherwise, verify from cookie.
@@ -60,6 +60,7 @@ export async function POST(request: Request) {
         clean_text: entry.Clean_Text,
         priority: entry.Priority,
         content_hash: hash,
+        workspace,
       });
     }
 

@@ -25,6 +25,7 @@ export default function EditEntryModal({
   const [tagsInput, setTagsInput] = useState(entry.context_tags?.join(', ') || '');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(entry.priority || 'medium');
   const [reminderDate, setReminderDate] = useState(entry.reminder_date || '');
+  const [workspace, setWorkspace] = useState<'home' | 'work'>(entry.workspace || 'home');
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -38,6 +39,7 @@ export default function EditEntryModal({
       category,
       context_tags: tags,
       priority,
+      workspace,
       reminder_date: reminderDate || null,
     });
     setIsSaving(false);
@@ -108,15 +110,30 @@ export default function EditEntryModal({
             </div>
           )}
 
-          {/* Reminder Date */}
-          <div>
-            <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Reminder Date</label>
-            <input
-              type="date"
-              value={reminderDate}
-              onChange={(e) => setReminderDate(e.target.value)}
-              className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            {/* Workspace Mode */}
+            <div>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Space</label>
+              <select
+                value={workspace}
+                onChange={(e) => setWorkspace(e.target.value as 'home' | 'work')}
+                className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none appearance-none"
+              >
+                <option value="home">🏠 Home</option>
+                <option value="work">💼 Work</option>
+              </select>
+            </div>
+
+            {/* Reminder Date */}
+            <div>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Reminder</label>
+              <input
+                type="date"
+                value={reminderDate}
+                onChange={(e) => setReminderDate(e.target.value)}
+                className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
+              />
+            </div>
           </div>
 
           {/* Tags */}

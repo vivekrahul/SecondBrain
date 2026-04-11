@@ -6,7 +6,9 @@ import MobileHeader from '@/components/MobileHeader';
 import DashboardCapture from '@/components/DashboardCapture';
 import type { BrainDump } from '@/lib/types';
 
-async function getDashboardData(userId: string) {
+import { cookies } from 'next/headers';
+
+async function getDashboardData(userId: string, workspace: string) {
   const today = new Date().toISOString().split('T')[0];
 
   const [tasksRes, ideasRes, shoppingRes] = await Promise.all([
@@ -14,6 +16,7 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
+      .eq('workspace', workspace)
       .eq('category', 'Task')
       .eq('status', 'Open')
       .order('created_at', { ascending: false })
@@ -22,6 +25,7 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
+      .eq('workspace', workspace)
       .eq('category', 'Idea')
       .eq('status', 'Open')
       .order('created_at', { ascending: false })
@@ -30,6 +34,7 @@ async function getDashboardData(userId: string) {
       .from('brain_dump')
       .select('*')
       .eq('user_id', userId)
+      .eq('workspace', workspace)
       .eq('category', 'Grocery')
       .eq('status', 'Open')
       .order('created_at', { ascending: false })
@@ -53,8 +58,11 @@ export default async function DashboardPage() {
     .eq('id', auth.userId)
     .single();
 
+  const cookieStore = await cookies();
+  const workspace = cookieStore.get('sb-workspace-mode')?.value || 'home';
+
   const displayName = profile?.name || profile?.email?.split('@')[0] || 'User';
-  const { tasks, ideas, rhythms } = await getDashboardData(auth.userId);
+  const { tasks, ideas, rhythms } = await getDashboardData(auth.userId, workspace);
 
   // Formatting date for header
   const dateOptions: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };

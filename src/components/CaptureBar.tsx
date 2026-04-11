@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSpeechInput } from '@/hooks/useSpeechInput';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 const toastMessages: Record<string, string> = {
   Task: 'Task added ✓',
@@ -18,6 +19,7 @@ export default function CaptureBar() {
   const [toasts, setToasts] = useState<{ id: number; message: string; isDuplicate?: boolean }[]>([]);
   const router = useRouter();
   const pathname = usePathname();
+  const { mode } = useWorkspace();
 
   // Hide on home page (DashboardCapture handles it there) and in focus mode
   if (pathname === '/' || pathname === '/focus') return null;
@@ -37,7 +39,7 @@ export default function CaptureBar() {
       const response = await fetch('/api/process-entry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText.trim() }),
+        body: JSON.stringify({ text: inputText.trim(), workspace: mode }),
       });
 
       if (response.ok) {

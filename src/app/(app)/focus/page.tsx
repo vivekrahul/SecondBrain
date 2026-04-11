@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { verifyAuth } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { BrainDump } from '@/lib/types';
@@ -8,11 +9,15 @@ export default async function FocusPage() {
   const auth = await verifyAuth();
   if (!auth) return null;
 
+  const cookieStore = await cookies();
+  const workspace = cookieStore.get('sb-workspace-mode')?.value || 'home';
+
   const [tasksRes, ideasRes] = await Promise.all([
     supabaseAdmin
       .from('brain_dump')
       .select('*')
       .eq('user_id', auth.userId)
+      .eq('workspace', workspace)
       .eq('category', 'Task')
       .eq('status', 'Open')
       .order('created_at', { ascending: false })
@@ -21,6 +26,7 @@ export default async function FocusPage() {
       .from('brain_dump')
       .select('*')
       .eq('user_id', auth.userId)
+      .eq('workspace', workspace)
       .eq('category', 'Idea')
       .eq('status', 'Open')
       .order('created_at', { ascending: false })

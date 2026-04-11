@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSpeechInput } from '@/hooks/useSpeechInput';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 const toastMessages: Record<string, string> = {
   Task: 'Task added ✓',
@@ -17,6 +18,7 @@ export default function DashboardCapture() {
   const [isLoading, setIsLoading] = useState(false);
   const [toasts, setToasts] = useState<{ id: number; message: string; isDuplicate?: boolean }[]>([]);
   const router = useRouter();
+  const { mode } = useWorkspace();
 
   const addToast = (message: string, isDuplicate = false) => {
     const id = Date.now();
@@ -33,7 +35,7 @@ export default function DashboardCapture() {
       const response = await fetch('/api/process-entry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText.trim() }),
+        body: JSON.stringify({ text: inputText.trim(), workspace: mode }),
       });
 
       if (response.ok) {

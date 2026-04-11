@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { verifyAuth } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
 // GET: Fetch entries for authenticated user
 export async function GET(request: Request) {
@@ -15,10 +16,14 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
     const limit = parseInt(searchParams.get('limit') || '50');
 
+    const cookieStore = await cookies();
+    const workspace = cookieStore.get('sb-workspace-mode')?.value || 'home';
+
     let query = supabaseAdmin
       .from('brain_dump')
       .select('*')
       .eq('user_id', auth.userId)
+      .eq('workspace', workspace)
       .order('created_at', { ascending: false })
       .limit(limit);
 
@@ -51,7 +56,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, status, category, clean_text, context_tags, priority, reminder_date, is_human_corrected } = await request.json();
+    const { id, status, category, clean_text, context_tags, priority, reminder_date, is_human_corrected, workspace } = await request.json();
     if (!id) {
       return NextResponse.json({ error: 'Entry ID is required' }, { status: 400 });
     }
@@ -60,6 +65,7 @@ export async function PATCH(request: Request) {
     if (status) updates.status = status;
     if (priority) updates.priority = priority;
     if (reminder_date !== undefined) updates.reminder_date = reminder_date;
+    if (workspace) updates.workspace = workspace;
     
     // If the user manually edits classification fields, mark it as human corrected 
     // so the AI can learn from it in few-shot prompting
