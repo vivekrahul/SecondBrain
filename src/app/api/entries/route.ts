@@ -51,17 +51,19 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, status, category, clean_text, context_tags } = await request.json();
+    const { id, status, category, clean_text, context_tags, priority, reminder_date, is_human_corrected } = await request.json();
     if (!id) {
       return NextResponse.json({ error: 'Entry ID is required' }, { status: 400 });
     }
 
     const updates: Record<string, any> = {};
     if (status) updates.status = status;
+    if (priority) updates.priority = priority;
+    if (reminder_date !== undefined) updates.reminder_date = reminder_date;
     
     // If the user manually edits classification fields, mark it as human corrected 
     // so the AI can learn from it in few-shot prompting
-    let isCorrection = false;
+    let isCorrection = typeof is_human_corrected === 'boolean' ? is_human_corrected : false;
     if (category) { updates.category = category; isCorrection = true; }
     if (clean_text) { updates.clean_text = clean_text; isCorrection = true; }
     if (context_tags) { updates.context_tags = context_tags; isCorrection = true; }

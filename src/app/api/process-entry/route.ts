@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { categorizeEntry } from '@/lib/groq';
 import { verifyAuth } from '@/lib/auth';
+import { contentHash } from '@/lib/hash';
 
 export async function POST(request: Request) {
   try {
@@ -27,16 +28,49 @@ export async function POST(request: Request) {
     // Categorize with Groq AI using Few-Shot Learning from user history
     const categorized = await categorizeEntry(text.trim(), authenticatedUserId);
 
-    // Map the returned array of objects for Supabase insertion
-    const recordsToInsert = categorized.entries.map((entry) => ({
-      user_id: authenticatedUserId,
-      raw_text: text.trim(), // keeping raw_text for all, since it spawned them
-      category: entry.Category,
-      status: 'Open',
-      reminder_date: entry.Reminder_Date,
-      context_tags: entry.Tags,
-      clean_text: entry.Clean_Text,
-    }));
+    // Build records, checking for duplicates via content hash
+    const recordsToInsert = [];
+    const duplicateEntries = [];
+
+    for (const entry of categorized.entries) {
+      const hash = await contentHash(entry.Clean_Text);
+
+      // Check for duplicate in last 30 open entries for this user
+      const { data: existing } = await supabaseAdmin
+        .from('brain_dump')
+        .select('id, clean_text, category, status')
+        .eq('user_id', authenticatedUserId)
+        .eq('content_hash', hash)
+        .eq('status', 'Open')
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        // Already exists — skip insert, add to duplicates list
+        duplicateEntries.push({ ...existing[0], isDuplicate: true });
+        continue;
+      }
+
+      recordsToInsert.push({
+        user_id: authenticatedUserId,
+        raw_text: text.trim(),
+        category: entry.Category,
+        status: 'Open',
+        reminder_date: entry.Reminder_Date,
+        context_tags: entry.Tags,
+        clean_text: entry.Clean_Text,
+        priority: entry.Priority,
+        content_hash: hash,
+      });
+    }
+
+    if (recordsToInsert.length === 0) {
+      // All entries were duplicates
+      return NextResponse.json({ 
+        success: true, 
+        entries: duplicateEntries,
+        allDuplicates: true,
+      });
+    }
 
     // Insert into brain_dump
     const { data, error } = await supabaseAdmin
@@ -49,7 +83,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to save entries' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, entries: data });
+    return NextResponse.json({ 
+      success: true, 
+      entries: [...(data || []), ...duplicateEntries],
+      duplicateCount: duplicateEntries.length,
+    });
   } catch (error) {
     console.error('Process entry error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('email, telegram_chat_id, name')
+    .select('email, telegram_chat_id, name, hidden_tabs')
     .eq('id', auth.userId)
     .single();
 
@@ -29,7 +29,7 @@ export default async function SettingsPage() {
               </span>
             </div>
           </div>
-          <h2 className="text-4xl font-extrabold tracking-tight mb-2">Second Brain</h2>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-2">Second Brain</h1>
           <p className="text-on-surface-variant font-medium">Elevate your digital sanctuary</p>
         </section>
 
@@ -38,6 +38,7 @@ export default async function SettingsPage() {
           name={profile?.name || ''}
           telegramChatId={profile?.telegram_chat_id || ''}
           userId={auth.userId}
+          hiddenTabs={profile?.hidden_tabs || []}
         />
       </div>
     </>

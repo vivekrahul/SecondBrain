@@ -20,8 +20,52 @@ export default function FocusSession({
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [isAmbientPlaying, setIsAmbientPlaying] = useState(false);
+  const [wakeLockActive, setWakeLockActive] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+  // Wake Lock — acquire when session starts running, release when paused/done
+  const acquireWakeLock = useCallback(async () => {
+    if (!('wakeLock' in navigator)) return;
+    try {
+      wakeLockRef.current = await navigator.wakeLock.request('screen');
+      setWakeLockActive(true);
+      wakeLockRef.current.addEventListener('release', () => {
+        setWakeLockActive(false);
+      });
+    } catch {
+      // Wake Lock may be denied (e.g. battery saver mode) — fail silently
+    }
+  }, []);
+
+  const releaseWakeLock = useCallback(async () => {
+    if (wakeLockRef.current) {
+      await wakeLockRef.current.release();
+      wakeLockRef.current = null;
+      setWakeLockActive(false);
+    }
+  }, []);
+
+  // Re-acquire wake lock if page visibility changes (e.g. user switches tabs momentarily)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && isRunning) {
+        acquireWakeLock();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [isRunning, acquireWakeLock]);
+
+  // Manage wake lock when running state changes
+  useEffect(() => {
+    if (isRunning) {
+      acquireWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+  }, [isRunning, acquireWakeLock, releaseWakeLock]);
 
   // Timer logic
   useEffect(() => {
@@ -78,12 +122,13 @@ export default function FocusSession({
 
   const exitSession = useCallback(() => {
     setIsRunning(false);
+    releaseWakeLock();
     if (audioRef.current) {
       audioRef.current.pause();
       setIsAmbientPlaying(false);
     }
     setPhase('select');
-  }, []);
+  }, [releaseWakeLock]);
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -214,6 +259,14 @@ export default function FocusSession({
       >
         <span className="material-symbols-outlined text-xl">close</span>
       </button>
+
+      {/* Wake Lock Indicator */}
+      {wakeLockActive && (
+        <div className="absolute top-6 left-6 flex items-center gap-1.5 text-[11px] font-semibold text-on-surface-variant/50">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+          Screen on
+        </div>
+      )}
 
       {/* Timer Ring */}
       <div className="relative w-56 h-56 mb-8">

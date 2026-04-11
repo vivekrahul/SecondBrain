@@ -3,6 +3,12 @@
 import { useState } from 'react';
 import type { BrainDump } from '@/lib/types';
 
+const PRIORITY_OPTIONS = [
+  { value: 'high',   label: '🔴 High',   description: 'Urgent, time-sensitive' },
+  { value: 'medium', label: '🟡 Medium', description: 'Important, no rush' },
+  { value: 'low',    label: '🟢 Low',    description: 'Nice to have, someday' },
+];
+
 export default function EditEntryModal({
   entry,
   onClose,
@@ -17,6 +23,8 @@ export default function EditEntryModal({
   const [cleanText, setCleanText] = useState(entry.clean_text || entry.raw_text);
   const [category, setCategory] = useState(entry.category);
   const [tagsInput, setTagsInput] = useState(entry.context_tags?.join(', ') || '');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(entry.priority || 'medium');
+  const [reminderDate, setReminderDate] = useState(entry.reminder_date || '');
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -29,6 +37,8 @@ export default function EditEntryModal({
       clean_text: cleanText,
       category,
       context_tags: tags,
+      priority,
+      reminder_date: reminderDate || null,
     });
     setIsSaving(false);
     onClose();
@@ -45,13 +55,14 @@ export default function EditEntryModal({
   return (
     <>
       <div className="fixed inset-0 bg-surface/80 backdrop-blur-sm z-50 transition-opacity" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-surface-container-lowest rounded-2xl p-6 z-50 shadow-[0_8px_40px_rgba(46,47,47,0.1)] border border-outline-variant/20 animate-fade-in-up">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-surface-container-lowest rounded-2xl p-6 z-50 shadow-[0_8px_40px_rgba(46,47,47,0.1)] border border-outline-variant/20 animate-fade-in-up max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-extrabold mb-4">Edit Entry</h2>
         
         <div className="space-y-4">
+          {/* Text */}
           <div>
             <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Text</label>
-            <textarea 
+            <textarea
               value={cleanText}
               onChange={(e) => setCleanText(e.target.value)}
               className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none resize-none"
@@ -59,9 +70,10 @@ export default function EditEntryModal({
             />
           </div>
 
+          {/* Category */}
           <div>
             <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Category</label>
-            <select 
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none appearance-none"
@@ -72,9 +84,45 @@ export default function EditEntryModal({
             </select>
           </div>
 
+          {/* Priority (show only for Tasks) */}
+          {(category === 'Task') && (
+            <div>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Priority</label>
+              <div className="grid grid-cols-3 gap-2">
+                {PRIORITY_OPTIONS.map(p => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setPriority(p.value as 'low' | 'medium' | 'high')}
+                    className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all text-center ${
+                      priority === p.value
+                        ? 'border-primary bg-primary/5'
+                        : 'border-surface-container-high bg-surface-container-low hover:border-outline-variant'
+                    }`}
+                  >
+                    <span className="text-base">{p.label.split(' ')[0]}</span>
+                    <span className="text-[10px] font-bold">{p.label.split(' ')[1]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Reminder Date */}
+          <div>
+            <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Reminder Date</label>
+            <input
+              type="date"
+              value={reminderDate}
+              onChange={(e) => setReminderDate(e.target.value)}
+              className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+
+          {/* Tags */}
           <div>
             <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Tags (comma separated)</label>
-            <input 
+            <input
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="urgent, work, idea"
@@ -84,7 +132,7 @@ export default function EditEntryModal({
         </div>
 
         <div className="flex justify-between items-center mt-8 pt-4 border-t border-outline-variant/10">
-          <button 
+          <button
             onClick={handleDelete}
             disabled={isDeleting}
             className="flex items-center gap-1 text-error hover:bg-error/10 px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
@@ -94,13 +142,13 @@ export default function EditEntryModal({
           </button>
 
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={onClose}
               className="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-full font-bold text-sm transition-colors"
             >
               Cancel
             </button>
-            <button 
+            <button
               onClick={handleSave}
               disabled={isSaving}
               className="px-6 py-2 bg-primary text-white rounded-full font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all"

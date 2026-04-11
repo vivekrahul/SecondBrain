@@ -11,8 +11,6 @@ const cardColors = [
   { bg: 'bg-[#ff9fff]', text: 'text-[#620062]', tag: 'bg-white/30', time: 'text-[#620062]/40' },
 ];
 
-const rotations = ['rotate-1', '-rotate-1', 'rotate-1', '-rotate-2'];
-
 export default async function IdeasPage() {
   const auth = await verifyAuth();
   if (!auth) return null;
@@ -28,6 +26,10 @@ export default async function IdeasPage() {
 
   const ideas = (data || []) as BrainDump[];
 
+  // Separate featured ideas (every 5th) from regular ones
+  const regularIdeas = ideas.filter((_, i) => i === 0 || i % 5 !== 0);
+  const featuredIdeas = ideas.filter((_, i) => i > 0 && i % 5 === 0);
+
   return (
     <>
       <div className="md:hidden pt-4 px-6 sticky top-0 w-full bg-surface z-50">
@@ -35,9 +37,9 @@ export default async function IdeasPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pt-4 pb-40 animate-page-enter">
-        {/* Welcome Section */}
+        {/* Header */}
         <section className="mb-10">
-          <h2 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Curated Thoughts</h2>
+          <h1 className="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Curated Thoughts</h1>
           <p className="text-on-surface-variant font-medium">Capture, connect, and refine your mental landscape.</p>
         </section>
 
@@ -45,79 +47,81 @@ export default async function IdeasPage() {
           <div className="bg-surface-container-low p-12 rounded-xl text-center">
             <span className="material-symbols-outlined text-6xl text-on-surface-variant/20 mb-4">lightbulb</span>
             <h3 className="text-xl font-bold text-on-surface mb-2">No ideas yet</h3>
-            <p className="text-on-surface-variant">Your creative canvas awaits. Start capturing sparks of inspiration below.</p>
+            <p className="text-on-surface-variant">Your creative canvas awaits. Start capturing sparks of inspiration.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {ideas.map((idea, i) => {
-              const color = cardColors[i % cardColors.length];
-              const rotation = rotations[i % rotations.length];
-              
-              // Every 5th card is a featured glass card
-              if (i > 0 && i % 5 === 0) {
+          <>
+            {/* Regular Ideas — CSS columns masonry (no overlap) */}
+            <div className="columns-1 md:columns-2 gap-5">
+              {regularIdeas.map((idea, i) => {
+                const color = cardColors[i % cardColors.length];
+                const rotations = ['rotate-1', '-rotate-1', 'rotate-1', '-rotate-2'];
+                const rotation = rotations[i % rotations.length];
+
                 return (
-                  <article key={idea.id} className="group relative col-span-1 md:col-span-2 bg-white/70 backdrop-blur-xl border border-white/40 p-10 rounded-xl shadow-[0_32px_64px_rgba(46,47,47,0.04)] my-6 animate-fade-in-up">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-primary/10 rounded-full">
-                        <span className="material-symbols-outlined text-primary">lightbulb</span>
+                  <article
+                    key={idea.id}
+                    className={`group ${color.bg} p-8 rounded-lg flex flex-col gap-4 transform ${rotation} hover:rotate-0 transition-transform duration-300 animate-fade-in-up break-inside-avoid mb-5 relative`}
+                    style={{ animationDelay: `${i * 0.05}s` }}
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className={`${color.text} text-xs font-bold uppercase tracking-widest px-3 py-1 ${color.tag} rounded-full`}>
+                        Idea
+                      </span>
+                      <div className="flex items-center gap-1">
+                        {idea.context_tags?.includes('review') && (
+                          <span className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Review</span>
+                        )}
+                        <EntryOptions entry={idea} />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-extrabold text-xl text-on-surface leading-none">Featured Insight</h3>
-                        <span className="text-on-surface-variant text-xs font-bold tracking-widest uppercase">Deep Focus</span>
-                      </div>
-                      <EntryOptions entry={idea} darkIcon={true} />
                     </div>
-                    <p className="text-on-surface text-2xl font-bold leading-snug">
+                    <p className={`${color.text} text-lg font-bold leading-tight`}>
                       {idea.clean_text || idea.raw_text}
                     </p>
-                    <div className="mt-8 pt-6 border-t border-surface-container-high flex justify-between items-center">
-                      <div className="flex gap-2">
-                        {idea.context_tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="px-3 py-1 bg-surface-container-low rounded-full text-xs font-medium text-on-surface-variant">#{tag}</span>
-                        ))}
-                      </div>
-                      <span className="text-[10px] font-bold text-on-surface-variant/60 uppercase">
+                    <div className="mt-4 flex items-center gap-2 flex-wrap">
+                      {idea.context_tags?.slice(0, 2).map((tag) => (
+                        <span key={tag} className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">
+                          {tag}
+                        </span>
+                      ))}
+                      <span className={`${color.time} text-[10px] font-bold uppercase`}>
                         {new Date(idea.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                   </article>
                 );
-              }
+              })}
+            </div>
 
-              return (
-                <article
-                  key={idea.id}
-                  className={`group ${color.bg} p-8 rounded-lg flex flex-col gap-4 transform ${rotation} hover:rotate-0 transition-transform duration-300 animate-fade-in-up relative`}
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <div className="flex justify-between items-start">
-                    <span className={`${color.text} text-xs font-bold uppercase tracking-widest px-3 py-1 ${color.tag} rounded-full`}>
-                      Idea
-                    </span>
-                    <div className="flex items-center gap-1">
-                      {idea.context_tags.includes('review') && (
-                        <span className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">Review</span>
-                      )}
-                      <EntryOptions entry={idea} />
-                    </div>
+            {/* Featured Ideas — full-width below the masonry grid */}
+            {featuredIdeas.map((idea) => (
+              <article key={idea.id} className="group relative bg-white/70 backdrop-blur-xl border border-white/40 p-10 rounded-xl shadow-[0_32px_64px_rgba(46,47,47,0.04)] my-6 animate-fade-in-up">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-primary/10 rounded-full">
+                    <span className="material-symbols-outlined text-primary">lightbulb</span>
                   </div>
-                  <p className={`${color.text} text-lg font-bold leading-tight`}>
-                    {idea.clean_text || idea.raw_text}
-                  </p>
-                  <div className="mt-4 flex items-center gap-2">
-                    {idea.context_tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="bg-white/90 text-on-primary-container px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest">
-                        {tag}
-                      </span>
+                  <div className="flex-1">
+                    <h3 className="font-extrabold text-xl text-on-surface leading-none">Featured Insight</h3>
+                    <span className="text-on-surface-variant text-xs font-bold tracking-widest uppercase">Deep Focus</span>
+                  </div>
+                  <EntryOptions entry={idea} darkIcon={true} />
+                </div>
+                <p className="text-on-surface text-2xl font-bold leading-snug">
+                  {idea.clean_text || idea.raw_text}
+                </p>
+                <div className="mt-8 pt-6 border-t border-surface-container-high flex justify-between items-center">
+                  <div className="flex gap-2">
+                    {idea.context_tags?.slice(0, 3).map((tag) => (
+                      <span key={tag} className="px-3 py-1 bg-surface-container-low rounded-full text-xs font-medium text-on-surface-variant">#{tag}</span>
                     ))}
-                    <span className={`${color.time} text-[10px] font-bold uppercase`}>
-                      {new Date(idea.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </span>
                   </div>
-                </article>
-              );
-            })}
-          </div>
+                  <span className="text-[10px] font-bold text-on-surface-variant/60 uppercase">
+                    {new Date(idea.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </>
         )}
       </div>
     </>

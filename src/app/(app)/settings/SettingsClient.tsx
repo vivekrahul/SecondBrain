@@ -3,23 +3,36 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+const ALL_TOGGLEABLE_TABS = [
+  { key: 'ideas',    label: 'Ideas',        icon: 'lightbulb',        desc: 'Your curated thought sparks' },
+  { key: 'shopping', label: 'Shopping',     icon: 'shopping_cart',    desc: 'Grocery & shopping list' },
+  { key: 'focus',    label: 'Focus Mode',   icon: 'self_improvement', desc: 'Pomodoro & deep work timer' },
+  { key: 'workout',  label: 'Gym Log',      icon: 'fitness_center',   desc: 'Workout & fitness tracker' },
+  { key: 'logs',     label: 'Activity Log', icon: 'history',          desc: 'Full history of entries' },
+];
+
 export default function SettingsClient({
   email,
   name: initialName,
   telegramChatId: initialChatId,
   userId: _userId,
+  hiddenTabs: initialHiddenTabs,
 }: {
   email: string;
   name: string;
   telegramChatId: string;
   userId: string;
+  hiddenTabs: string[];
 }) {
   const [name, setName] = useState(initialName);
   const [chatId, setChatId] = useState(initialChatId);
+  const [hiddenTabs, setHiddenTabs] = useState<string[]>(initialHiddenTabs);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isSavingTelegram, setIsSavingTelegram] = useState(false);
+  const [isSavingTabs, setIsSavingTabs] = useState(false);
   const [savedProfile, setSavedProfile] = useState(false);
   const [savedTelegram, setSavedTelegram] = useState(false);
+  const [savedTabs, setSavedTabs] = useState(false);
   const router = useRouter();
 
   const handleSaveName = async () => {
@@ -33,7 +46,7 @@ export default function SettingsClient({
       if (res.ok) {
         setSavedProfile(true);
         setTimeout(() => setSavedProfile(false), 3000);
-        router.refresh(); // refresh sidebar name
+        router.refresh();
       }
     } finally {
       setIsSavingProfile(false);
@@ -54,6 +67,30 @@ export default function SettingsClient({
       }
     } finally {
       setIsSavingTelegram(false);
+    }
+  };
+
+  const toggleTab = (key: string) => {
+    setHiddenTabs(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+    );
+  };
+
+  const handleSaveTabs = async () => {
+    setIsSavingTabs(true);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hidden_tabs: hiddenTabs }),
+      });
+      if (res.ok) {
+        setSavedTabs(true);
+        setTimeout(() => setSavedTabs(false), 3000);
+        router.refresh();
+      }
+    } finally {
+      setIsSavingTabs(false);
     }
   };
 
@@ -111,7 +148,49 @@ export default function SettingsClient({
             </div>
             <span className="text-xs font-bold text-outline-variant uppercase tracking-wider">Read-only</span>
           </div>
+        </div>
+      </section>
 
+      {/* Navigation Customization */}
+      <section>
+        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-on-surface-variant px-4 mb-4">Navigation Tabs</h3>
+        <div className="bg-surface-container-low rounded-xl overflow-hidden">
+          <div className="p-6 bg-surface-container-lowest">
+            <p className="text-sm text-on-surface-variant mb-5">Toggle which sections appear in your navigation. Home and Tasks are always visible.</p>
+            <div className="space-y-4">
+              {ALL_TOGGLEABLE_TABS.map(tab => {
+                const isVisible = !hiddenTabs.includes(tab.key);
+                return (
+                  <div key={tab.key} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${isVisible ? 'bg-primary/10 text-primary' : 'bg-surface-container text-on-surface-variant/40'}`}>
+                        <span className="material-symbols-outlined text-lg">{tab.icon}</span>
+                      </div>
+                      <div>
+                        <p className={`font-semibold text-sm transition-colors ${isVisible ? 'text-on-surface' : 'text-on-surface-variant/50'}`}>{tab.label}</p>
+                        <p className="text-xs text-on-surface-variant/60">{tab.desc}</p>
+                      </div>
+                    </div>
+                    {/* Toggle switch */}
+                    <button
+                      onClick={() => toggleTab(tab.key)}
+                      className={`relative w-12 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${isVisible ? 'bg-primary' : 'bg-surface-container-high'}`}
+                      aria-label={`Toggle ${tab.label}`}
+                    >
+                      <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${isVisible ? 'translate-x-7' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              onClick={handleSaveTabs}
+              disabled={isSavingTabs}
+              className="mt-6 w-full py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold text-sm active:scale-95 transition-all disabled:opacity-50"
+            >
+              {savedTabs ? '✓ Saved' : isSavingTabs ? 'Saving...' : 'Save Navigation'}
+            </button>
+          </div>
         </div>
       </section>
 
@@ -193,7 +272,7 @@ export default function SettingsClient({
           Logout
         </button>
         <p className="text-center text-[10px] text-outline-variant mt-6 uppercase tracking-widest font-black opacity-50">
-          Version 1.0.0 (Luminous Edition)
+          Version 2.0.0 (Luminous Edition)
         </p>
       </section>
     </div>

@@ -4,6 +4,7 @@ export interface Profile {
   pin: string;
   telegram_chat_id: string | null;
   created_at: string;
+  hidden_tabs: string[];
 }
 
 export interface BrainDump {
@@ -16,6 +17,8 @@ export interface BrainDump {
   reminder_date: string | null;
   context_tags: string[];
   clean_text: string | null;
+  priority: 'low' | 'medium' | 'high';
+  content_hash: string | null;
 }
 
 export interface GroqEntry {
@@ -23,6 +26,7 @@ export interface GroqEntry {
   Reminder_Date: string | null;
   Tags: string[];
   Clean_Text: string;
+  Priority: 'low' | 'medium' | 'high';
 }
 
 export interface GroqResponse {

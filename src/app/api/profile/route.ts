@@ -10,13 +10,14 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { telegram_chat_id, name, has_seen_onboarding } = body;
+    const { telegram_chat_id, name, has_seen_onboarding, hidden_tabs } = body;
 
     // Build update object with only provided fields
-    const updates: Record<string, string | boolean | null> = {};
+    const updates: Record<string, string | boolean | string[] | null> = {};
     if (typeof telegram_chat_id !== 'undefined') updates.telegram_chat_id = telegram_chat_id || null;
     if (typeof name !== 'undefined') updates.name = name || null;
     if (typeof has_seen_onboarding !== 'undefined') updates.has_seen_onboarding = has_seen_onboarding;
+    if (typeof hidden_tabs !== 'undefined') updates.hidden_tabs = Array.isArray(hidden_tabs) ? hidden_tabs : [];
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
