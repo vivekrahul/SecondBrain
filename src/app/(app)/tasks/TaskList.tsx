@@ -129,7 +129,7 @@ export default function TaskList({
             {filteredOpenItems.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center gap-3 bg-surface-container-lowest p-3 sm:p-4 rounded-xl group hover:shadow-sm transition-shadow"
+                className="flex items-center gap-3 bg-surface-container-lowest p-3 sm:p-4 rounded-xl group hover:shadow-sm transition-shadow overflow-hidden"
               >
                 {/* Checkbox */}
                 <button
@@ -149,7 +149,7 @@ export default function TaskList({
                 {/* Task content — takes ALL remaining space */}
                 <button
                   type="button"
-                  className="flex-1 min-w-0 text-left"
+                  className="flex-1 min-w-0 text-left overflow-hidden"
                   onClick={() => setEditingEntry(item)}
                 >
                   <p className="text-sm sm:text-[15px] text-on-surface font-medium leading-snug truncate">
