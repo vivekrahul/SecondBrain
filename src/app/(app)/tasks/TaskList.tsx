@@ -117,11 +117,31 @@ export default function TaskList({
               const prio = (item.priority || 'medium') as keyof typeof PRIORITY_CONFIG;
               const pc = PRIORITY_CONFIG[prio];
               return (
-                <li key={item.id} className="flex items-start gap-3 bg-white/60 p-4 rounded-lg group">
+                <li key={item.id} className="flex items-center gap-3 bg-white/60 p-4 rounded-lg group">
                   <div
-                    className="w-6 h-6 border-2 border-tertiary/30 rounded-md flex items-center justify-center bg-white group-hover:border-tertiary transition-colors cursor-pointer flex-shrink-0 mt-0.5"
+                    className="w-6 h-6 border-2 border-tertiary/30 rounded-md flex items-center justify-center bg-white group-hover:border-tertiary transition-colors cursor-pointer flex-shrink-0"
                     onClick={() => handleToggle(item, 'Done')}
                   />
+
+                  {/* Priority Dots — each dot sets that priority directly */}
+                  <div className="flex flex-col gap-1 flex-shrink-0">
+                    {(['high', 'medium', 'low'] as const).map(p => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); handlePriorityChange(item, p); }}
+                        className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-black/5 transition-all"
+                        title={`Set ${p} priority`}
+                      >
+                        <span
+                          className={`block rounded-full transition-all ${PRIORITY_CONFIG[p].dot} ${
+                            item.priority === p ? 'w-3 h-3 opacity-100' : 'w-2 h-2 opacity-25 hover:opacity-60'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handleToggle(item, 'Done')}>
                     <span className="text-on-surface font-medium break-words line-clamp-2 block">
                       {item.clean_text || item.raw_text}
@@ -141,22 +161,6 @@ export default function TaskList({
                         </span>
                       )}
                     </div>
-                  </div>
-
-                  {/* Inline Priority Dots — tap to cycle */}
-                  <div
-                    className="flex items-center gap-1.5 flex-shrink-0 mt-1 cursor-pointer p-1 rounded-full hover:bg-black/5 transition-colors"
-                    onClick={(e) => { e.stopPropagation(); handlePriorityChange(item, cyclePriority(item.priority)); }}
-                    title={`Priority: ${pc.label} — tap to change`}
-                  >
-                    {(['high', 'medium', 'low'] as const).map(p => (
-                      <span
-                        key={p}
-                        className={`w-2.5 h-2.5 rounded-full transition-all ${
-                          PRIORITY_CONFIG[p].dot
-                        } ${item.priority === p ? 'scale-125 ring-2 ring-offset-1 ring-current opacity-100' : 'opacity-30'}`}
-                      />
-                    ))}
                   </div>
 
                   <button
