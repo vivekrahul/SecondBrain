@@ -67,6 +67,20 @@ export default function TaskList({
     router.refresh();
   };
 
+  const handlePriorityChange = async (item: BrainDump, newPriority: 'low' | 'medium' | 'high') => {
+    setEntries(prev => prev.map(e => e.id === item.id ? { ...e, priority: newPriority } : e));
+    await fetch('/api/entries', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: item.id, priority: newPriority }),
+    });
+  };
+
+  const cyclePriority = (current: string): 'low' | 'medium' | 'high' => {
+    const cycle = { high: 'medium', medium: 'low', low: 'high' } as const;
+    return cycle[(current || 'medium') as keyof typeof cycle];
+  };
+
   return (
     <div className="space-y-6">
       {/* Priority Filter Tabs */}
@@ -113,11 +127,6 @@ export default function TaskList({
                       {item.clean_text || item.raw_text}
                     </span>
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                      {/* Priority badge */}
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${pc.bg} ${pc.text}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${pc.dot} inline-block`} />
-                        {pc.label}
-                      </span>
                       {/* Reminder date */}
                       {item.reminder_date && (
                         <span className="inline-flex items-center gap-1 text-[10px] text-on-surface-variant/60 font-medium">
@@ -133,6 +142,23 @@ export default function TaskList({
                       )}
                     </div>
                   </div>
+
+                  {/* Inline Priority Dots — tap to cycle */}
+                  <div
+                    className="flex items-center gap-1.5 flex-shrink-0 mt-1 cursor-pointer p-1 rounded-full hover:bg-black/5 transition-colors"
+                    onClick={(e) => { e.stopPropagation(); handlePriorityChange(item, cyclePriority(item.priority)); }}
+                    title={`Priority: ${pc.label} — tap to change`}
+                  >
+                    {(['high', 'medium', 'low'] as const).map(p => (
+                      <span
+                        key={p}
+                        className={`w-2.5 h-2.5 rounded-full transition-all ${
+                          PRIORITY_CONFIG[p].dot
+                        } ${item.priority === p ? 'scale-125 ring-2 ring-offset-1 ring-current opacity-100' : 'opacity-30'}`}
+                      />
+                    ))}
+                  </div>
+
                   <button
                     onClick={(e) => { e.stopPropagation(); setEditingEntry(item); }}
                     className="p-2 text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 rounded-full hover:bg-black/5"

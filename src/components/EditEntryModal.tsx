@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import type { BrainDump } from '@/lib/types';
 
 const PRIORITY_OPTIONS = [
@@ -28,6 +29,14 @@ export default function EditEntryModal({
   const [workspace, setWorkspace] = useState<'home' | 'work'>(entry.workspace || 'home');
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Lock body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
   const categories = ['Grocery', 'Gym', 'Idea', 'Task', 'Uncategorized'];
 
@@ -54,127 +63,133 @@ export default function EditEntryModal({
     onClose();
   };
 
-  return (
+  const modalContent = (
     <>
-      <div className="fixed inset-0 bg-surface/80 backdrop-blur-sm z-50 transition-opacity" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-surface-container-lowest rounded-2xl p-6 z-50 shadow-[0_8px_40px_rgba(46,47,47,0.1)] border border-outline-variant/20 animate-fade-in-up max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-extrabold mb-4">Edit Entry</h2>
-        
-        <div className="space-y-4">
-          {/* Text */}
-          <div>
-            <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Text</label>
-            <textarea
-              value={cleanText}
-              onChange={(e) => setCleanText(e.target.value)}
-              className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none resize-none"
-              rows={3}
-            />
-          </div>
-
-          {/* Category */}
-          <div>
-            <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none appearance-none"
-            >
-              {categories.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Priority (show only for Tasks) */}
-          {(category === 'Task') && (
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
+        <div className="w-full max-w-md bg-surface-container-lowest rounded-2xl p-6 shadow-[0_8px_40px_rgba(46,47,47,0.15)] border border-outline-variant/20 animate-fade-in-up max-h-[85vh] overflow-y-auto pointer-events-auto">
+          <h2 className="text-xl font-extrabold mb-4">Edit Entry</h2>
+          
+          <div className="space-y-4">
+            {/* Text */}
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Priority</label>
-              <div className="grid grid-cols-3 gap-2">
-                {PRIORITY_OPTIONS.map(p => (
-                  <button
-                    key={p.value}
-                    type="button"
-                    onClick={() => setPriority(p.value as 'low' | 'medium' | 'high')}
-                    className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all text-center ${
-                      priority === p.value
-                        ? 'border-primary bg-primary/5'
-                        : 'border-surface-container-high bg-surface-container-low hover:border-outline-variant'
-                    }`}
-                  >
-                    <span className="text-base">{p.label.split(' ')[0]}</span>
-                    <span className="text-[10px] font-bold">{p.label.split(' ')[1]}</span>
-                  </button>
-                ))}
-              </div>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Text</label>
+              <textarea
+                value={cleanText}
+                onChange={(e) => setCleanText(e.target.value)}
+                className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none resize-none"
+                rows={3}
+              />
             </div>
-          )}
 
-          <div className="grid grid-cols-2 gap-4">
-            {/* Workspace Mode */}
+            {/* Category */}
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Space</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Category</label>
               <select
-                value={workspace}
-                onChange={(e) => setWorkspace(e.target.value as 'home' | 'work')}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none appearance-none"
               >
-                <option value="home">🏠 Home</option>
-                <option value="work">💼 Work</option>
+                {categories.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
               </select>
             </div>
 
-            {/* Reminder Date */}
+            {/* Priority (show only for Tasks) */}
+            {(category === 'Task') && (
+              <div>
+                <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Priority</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {PRIORITY_OPTIONS.map(p => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setPriority(p.value as 'low' | 'medium' | 'high')}
+                      className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-all text-center ${
+                        priority === p.value
+                          ? 'border-primary bg-primary/5'
+                          : 'border-surface-container-high bg-surface-container-low hover:border-outline-variant'
+                      }`}
+                    >
+                      <span className="text-base">{p.label.split(' ')[0]}</span>
+                      <span className="text-[10px] font-bold">{p.label.split(' ')[1]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* Workspace Mode */}
+              <div>
+                <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Space</label>
+                <select
+                  value={workspace}
+                  onChange={(e) => setWorkspace(e.target.value as 'home' | 'work')}
+                  className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none appearance-none"
+                >
+                  <option value="home">🏠 Home</option>
+                  <option value="work">💼 Work</option>
+                </select>
+              </div>
+
+              {/* Reminder Date */}
+              <div>
+                <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Reminder</label>
+                <input
+                  type="date"
+                  value={reminderDate}
+                  onChange={(e) => setReminderDate(e.target.value)}
+                  className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Tags */}
             <div>
-              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Reminder</label>
+              <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Tags (comma separated)</label>
               <input
-                type="date"
-                value={reminderDate}
-                onChange={(e) => setReminderDate(e.target.value)}
+                value={tagsInput}
+                onChange={(e) => setTagsInput(e.target.value)}
+                placeholder="urgent, work, idea"
                 className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
               />
             </div>
           </div>
 
-          {/* Tags */}
-          <div>
-            <label className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Tags (comma separated)</label>
-            <input
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="urgent, work, idea"
-              className="w-full bg-surface-container-low text-on-surface rounded-lg p-3 border-0 focus:ring-2 focus:ring-primary outline-none"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mt-8 pt-4 border-t border-outline-variant/10">
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="flex items-center gap-1 text-error hover:bg-error/10 px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
-          >
-            <span className="material-symbols-outlined text-sm">delete</span>
-            <span className="text-sm font-bold">Delete</span>
-          </button>
-
-          <div className="flex gap-2">
+          <div className="flex justify-between items-center mt-8 pt-4 border-t border-outline-variant/10">
             <button
-              onClick={onClose}
-              className="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-full font-bold text-sm transition-colors"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex items-center gap-1 text-error hover:bg-error/10 px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
-              Cancel
+              <span className="material-symbols-outlined text-sm">delete</span>
+              <span className="text-sm font-bold">Delete</span>
             </button>
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="px-6 py-2 bg-primary text-white rounded-full font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all"
-            >
-              {isSaving ? <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span> : 'Save'}
-            </button>
+
+            <div className="flex gap-2">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-full font-bold text-sm transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-6 py-2 bg-primary text-white rounded-full font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 disabled:opacity-50 transition-all"
+              >
+                {isSaving ? <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span> : 'Save'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </>
   );
+
+  // Portal to document.body so the modal escapes any overflow:auto containers
+  if (!mounted) return null;
+  return createPortal(modalContent, document.body);
 }
