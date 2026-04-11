@@ -21,16 +21,13 @@ export default function CaptureBar() {
   const pathname = usePathname();
   const { mode } = useWorkspace();
 
-  // Hide on home page (DashboardCapture handles it there) and in focus mode
-  if (pathname === '/' || pathname === '/focus') return null;
-
-  const addToast = (message: string, isDuplicate = false) => {
+  const addToast = useCallback((message: string, isDuplicate = false) => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, isDuplicate }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 2500);
-  };
+  }, []);
 
   const submitText = useCallback(async (inputText: string) => {
     if (!inputText.trim() || isLoading) return;
@@ -71,17 +68,21 @@ export default function CaptureBar() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, router]);
+  }, [isLoading, router, mode, addToast]);
 
   const { isListening, isSupported, startListening, stopListening } = useSpeechInput(
     (transcript) => setText(transcript),
     (finalText) => submitText(finalText),
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     await submitText(text);
-  };
+  }, [submitText, text]);
+
+  // Hide on home page (DashboardCapture handles it there) and in focus mode
+  // IMPORTANT: This must be AFTER all hooks to respect React's Rules of Hooks
+  if (pathname === '/' || pathname === '/focus') return null;
 
   return (
     <>
