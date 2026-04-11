@@ -2,13 +2,21 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useWorkspace, type WorkspaceMode } from '@/context/WorkspaceContext';
 
 export default function MobileHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { mode, setMode } = useWorkspace();
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), []);
+
+  const handleModeSwitch = (newMode: WorkspaceMode) => {
+    setMode(newMode);
+    router.refresh();
+  };
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -46,10 +54,15 @@ export default function MobileHeader() {
           <span className="material-symbols-outlined text-on-surface-variant text-[22px]">menu</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>psychiatry</span>
-          <span className="text-base font-bold text-on-surface tracking-tight">Second Brain</span>
-        </div>
+        {/* Compact Workspace Toggle Pill — always visible in mobile header */}
+        <button
+          onClick={() => handleModeSwitch(mode === 'home' ? 'work' : 'home')}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container active:scale-95 transition-all"
+          aria-label={`Switch to ${mode === 'home' ? 'Work' : 'Home'} mode`}
+        >
+          <span className="text-sm">{mode === 'home' ? '🏠' : '💼'}</span>
+          <span className="text-xs font-bold text-on-surface-variant capitalize">{mode}</span>
+        </button>
 
         <Link href="/settings" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
           <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
@@ -83,6 +96,27 @@ export default function MobileHeader() {
               >
                 <span className="material-symbols-outlined text-on-surface-variant text-xl">close</span>
               </button>
+            </div>
+
+            {/* Workspace Mode Toggle inside Drawer */}
+            <div className="px-4 pt-4 pb-2">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/50 px-2 mb-2">Workspace</p>
+              <div className="flex bg-surface-container rounded-full p-1">
+                {(['home', 'work'] as WorkspaceMode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => handleModeSwitch(m)}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-sm font-semibold transition-all duration-200 ${
+                      mode === m
+                        ? 'bg-surface-container-lowest text-primary shadow-sm'
+                        : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                  >
+                    <span className="text-base">{m === 'home' ? '🏠' : '💼'}</span>
+                    <span className="capitalize">{m}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Nav Links */}
@@ -138,3 +172,4 @@ export default function MobileHeader() {
     </>
   );
 }
+
