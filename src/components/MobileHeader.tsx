@@ -63,9 +63,14 @@ export default function MobileHeader() {
           <span className="text-xs font-bold text-on-surface-variant capitalize">{mode}</span>
         </button>
 
-        <Link href="/settings" prefetch={true} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
-          <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/insights" prefetch={true} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform text-primary" aria-label="Insights">
+            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
+          </Link>
+          <Link href="/settings" prefetch={true} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
+            <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+          </Link>
+        </div>
       </header>
 
       {/* Fullscreen Drawer Overlay */}

@@ -85,3 +85,6 @@ ALTER TABLE brain_dump ADD COLUMN IF NOT EXISTS is_human_corrected BOOLEAN DEFAU
 
 -- Migration: Add completed_at to brain_dump to track consistency metrics
 ALTER TABLE brain_dump ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;
+
+-- Backfill completed_at for existing done tasks
+UPDATE brain_dump SET completed_at = created_at WHERE status = 'Done' AND completed_at IS NULL;
