@@ -20,6 +20,7 @@ export interface BrainDump {
   priority: 'low' | 'medium' | 'high';
   content_hash: string | null;
   workspace: 'home' | 'work';
+  completed_at?: string | null;
 }
 
 export interface GroqEntry {

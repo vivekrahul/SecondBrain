@@ -82,3 +82,6 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS has_seen_onboarding BOOLEAN DEFAUL
 
 -- Migration: Add is_human_corrected to brain_dump for AI learning
 ALTER TABLE brain_dump ADD COLUMN IF NOT EXISTS is_human_corrected BOOLEAN DEFAULT FALSE;
+
+-- Migration: Add completed_at to brain_dump to track consistency metrics
+ALTER TABLE brain_dump ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;

@@ -62,7 +62,14 @@ export async function PATCH(request: Request) {
     }
 
     const updates: Record<string, any> = {};
-    if (status) updates.status = status;
+    if (status) {
+      updates.status = status;
+      if (status === 'Done') {
+        updates.completed_at = new Date().toISOString();
+      } else if (status === 'Open' || status === 'Archived') {
+        updates.completed_at = null;
+      }
+    }
     if (priority) updates.priority = priority;
     if (reminder_date !== undefined) updates.reminder_date = reminder_date;
     if (workspace) updates.workspace = workspace;
