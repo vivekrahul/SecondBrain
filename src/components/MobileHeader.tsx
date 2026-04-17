@@ -15,7 +15,6 @@ export default function MobileHeader() {
 
   const handleModeSwitch = (newMode: WorkspaceMode) => {
     setMode(newMode);
-    router.refresh();
   };
 
   // Lock body scroll when menu is open
@@ -64,7 +63,7 @@ export default function MobileHeader() {
           <span className="text-xs font-bold text-on-surface-variant capitalize">{mode}</span>
         </button>
 
-        <Link href="/settings" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
+        <Link href="/settings" prefetch={true} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform" aria-label="Settings">
           <span className="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
         </Link>
       </header>
@@ -127,6 +126,7 @@ export default function MobileHeader() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm ${
                       isActive
                         ? 'bg-primary/10 text-primary font-bold'
@@ -149,6 +149,7 @@ export default function MobileHeader() {
             <div className="px-4 pb-6 pt-2 border-t border-surface-variant space-y-1">
               <Link
                 href="/settings"
+                prefetch={true}
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm ${
                   pathname === '/settings'
                     ? 'bg-primary/10 text-primary font-bold'
@@ -160,6 +161,7 @@ export default function MobileHeader() {
               </Link>
               <Link
                 href="/insights"
+                prefetch={true}
                 className="flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-sm text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
               >
                 <span className="material-symbols-outlined text-xl">analytics</span>

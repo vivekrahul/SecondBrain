@@ -80,7 +80,7 @@ export default async function DashboardPage() {
         {/* Desktop Header */}
         <header className="hidden md:flex justify-between items-center mb-12">
           <div className="flex items-center gap-4">
-            <Link href="/settings" className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container active:scale-95 transition-transform hover:bg-surface-container-high" aria-label="Settings">
+            <Link href="/settings" prefetch={true} className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container active:scale-95 transition-transform hover:bg-surface-container-high" aria-label="Settings">
               <span className="material-symbols-outlined text-primary">psychiatry</span>
             </Link>
             <h1 className="text-2xl font-semibold text-on-surface">
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
           
           {/* Focus Flow */}
           <div className="cozy-card p-6 border-l-[3px] border-secondary-dim">
-            <Link href="/tasks" className="flex justify-between hover:opacity-70 transition-opacity">
+            <Link href="/tasks" prefetch={true} className="flex justify-between hover:opacity-70 transition-opacity">
               <div className="flex items-center gap-3 mb-5">
                 <span className="material-symbols-outlined text-secondary">eco</span>
                 <h2 className="text-base text-on-surface">Focus Flow</h2>
@@ -126,7 +126,7 @@ export default async function DashboardPage() {
 
           {/* Idea Sparks */}
           <div className="cozy-card p-6 border-l-[3px] border-primary-container">
-            <Link href="/ideas" className="flex justify-between hover:opacity-70 transition-opacity">
+            <Link href="/ideas" prefetch={true} className="flex justify-between hover:opacity-70 transition-opacity">
               <div className="flex items-center gap-3 mb-5">
                 <span className="material-symbols-outlined text-primary-dim">lightbulb</span>
                 <h2 className="text-base text-on-surface">Idea Sparks</h2>
@@ -153,7 +153,7 @@ export default async function DashboardPage() {
 
           {/* Shopping */}
           <div className="cozy-card p-6 border-l-[3px] border-secondary-dim">
-            <Link href="/shopping" className="flex justify-between hover:opacity-70 transition-opacity">
+            <Link href="/shopping" prefetch={true} className="flex justify-between hover:opacity-70 transition-opacity">
               <div className="flex items-center gap-3 mb-5">
                 <span className="material-symbols-outlined text-secondary">shopping_cart</span>
                 <h2 className="text-base text-on-surface">Shopping</h2>
@@ -177,7 +177,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Focus Mode CTA */}
-          <Link href="/focus" className="cozy-card p-6 border-l-[3px] border-primary-container group">
+          <Link href="/focus" prefetch={true} className="cozy-card p-6 border-l-[3px] border-primary-container group">
             <div className="flex items-center gap-3 mb-5">
               <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>self_improvement</span>
               <h2 className="text-base text-on-surface">Focus Mode</h2>
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
 
         <footer className="max-w-4xl mx-auto p-6 cozy-card mt-12 text-center text-sm text-on-surface-variant">
             <p>You&apos;ve offloaded <span className="font-bold text-primary">{tasks.length + ideas.length + rhythms.length} thoughts</span> recently. Well done.</p>
-            <p className="text-xs text-outline-variant mt-2">The AI is connecting your notes in the background. <Link href="/insights" className="text-primary-dim font-medium hover:underline">View Map?</Link></p>
+            <p className="text-xs text-outline-variant mt-2">The AI is connecting your notes in the background. <Link href="/insights" prefetch={true} className="text-primary-dim font-medium hover:underline">View Map?</Link></p>
         </footer>
 
       </div>

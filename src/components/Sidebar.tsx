@@ -43,6 +43,7 @@ export default function Sidebar({ displayName, hiddenTabs = [] }: { displayName?
       <Link
         key={item.href}
         href={item.href}
+        prefetch={true}
         className={`flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
           isActive
             ? 'bg-surface-container-lowest text-primary font-bold'
@@ -100,6 +101,7 @@ export default function Sidebar({ displayName, hiddenTabs = [] }: { displayName?
         <div className="flex gap-2">
           <Link
             href="/settings"
+            prefetch={true}
             className={`flex-1 flex items-center gap-4 px-4 py-3 rounded-full transition-all duration-300 ${
               pathname === '/settings'
                 ? 'bg-surface-container-lowest text-primary font-bold'
@@ -111,6 +113,7 @@ export default function Sidebar({ displayName, hiddenTabs = [] }: { displayName?
           </Link>
           <Link
             href="/insights"
+            prefetch={true}
             className={`flex items-center justify-center w-12 rounded-full transition-all duration-300 ${
               pathname === '/insights'
                 ? 'bg-surface-container-lowest text-primary font-bold'

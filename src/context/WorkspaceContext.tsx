@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 
 export type WorkspaceMode = 'home' | 'work';
 
@@ -17,6 +18,8 @@ const WorkspaceContext = createContext<WorkspaceContextValue>({
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<WorkspaceMode>('home');
 
+  const router = useRouter();
+
   // Hydrate from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('sb-workspace-mode') as WorkspaceMode | null;
@@ -28,14 +31,16 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       // Sync to cookie if it's missing or mismatched
       if (existingCookie !== stored) {
         document.cookie = `sb-workspace-mode=${stored}; path=/; max-age=31536000`;
+        router.refresh();
       }
     }
-  }, []);
+  }, [router]);
 
   const setMode = (newMode: WorkspaceMode) => {
     setModeState(newMode);
     localStorage.setItem('sb-workspace-mode', newMode);
     document.cookie = `sb-workspace-mode=${newMode}; path=/; max-age=31536000`;
+    router.refresh();
   };
 
   return (

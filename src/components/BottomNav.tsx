@@ -31,6 +31,7 @@ export default function BottomNav({ hiddenTabs = [] }: { hiddenTabs?: string[] }
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={`flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all duration-200 active:scale-90 min-w-[52px] ${
                 isActive ? 'text-primary' : 'text-on-surface-variant/60'
               }`}
